@@ -1,0 +1,51 @@
+#include <FastLED.h>
+
+#define NUM_LEDS 60
+#define TRAIL 10
+
+#define DATA_PIN 3
+#define CLOCK_PIN 13
+
+#define FORWARD 1
+#define REVERSE -1
+
+CRGB leds[NUM_LEDS];
+
+void setup() { 
+    FastLED.addLeds<APA102, DATA_PIN, CLOCK_PIN, BGR>(leds, NUM_LEDS);
+    FastLED.setBrightness(10);
+}
+
+int leadingLed = 0;
+int trailingLed = -TRAIL;
+int direction = FORWARD;
+
+void loop() {
+  if (leadingLed >= 0 && leadingLed < NUM_LEDS)
+  {
+    leds[leadingLed] = CRGB::Red;
+  }
+  if (trailingLed >= 0 && trailingLed < NUM_LEDS)
+  {
+    leds[trailingLed] = CRGB::Black;
+  }
+  
+  leadingLed += direction;
+  trailingLed += direction;
+
+  if (leadingLed >= NUM_LEDS + TRAIL)
+  {
+    direction = REVERSE;
+    leadingLed = NUM_LEDS - 1;
+    trailingLed = NUM_LEDS + TRAIL - 1;
+  }
+  if (leadingLed <= -TRAIL)
+  {
+    direction = FORWARD;
+    leadingLed = 0;
+    trailingLed = -TRAIL;
+  }
+  
+  FastLED.show();
+  delay(30);
+}
