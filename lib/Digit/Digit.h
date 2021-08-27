@@ -5,7 +5,6 @@
 
 const byte LEDS_PER_SEGMENT = 2;
 const byte SEGMENTS_PER_DIGIT = 7;
-const byte LEDS_IN_SEPARATOR = 2;
 const byte LEDS_PER_DIGIT = LEDS_PER_SEGMENT * SEGMENTS_PER_DIGIT;
 
 const byte SEG_TOP_LEFT = 0;

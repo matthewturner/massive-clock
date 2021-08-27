@@ -13,24 +13,24 @@ void setUp(void)
 
 void test_first_digit_eight(void)
 {
-    target.setDigit(0, 8);
     expected.setLedRange(0, 13, true);
+    target.setDigit(0, 8);
     assert();
 }
 
 void test_first_digit_zero(void)
 {
-    target.setDigit(0, 0);
     expected.setLedRange(0, 5, true);
     expected.setLedRange(8, 13, true);
+    target.setDigit(0, 0);
     assert();
 }
 
 void test_first_digit_one(void)
 {
-    target.setDigit(0, 1);
     expected.setLedRange(4, 5, true);
     expected.setLedRange(12, 13, true);
+    target.setDigit(0, 1);
     assert();
 }
 

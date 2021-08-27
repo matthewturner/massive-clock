@@ -1,5 +1,5 @@
-#ifndef Digit_h
-#define Digit_h
+#ifndef Display_h
+#define Display_h
 
 #include "common.h"
 #include "Digit.h"
@@ -12,10 +12,11 @@ class Display
 public:
     bool led(byte led);
     void setDigit(byte digit, byte value);
-    // void setPart(byte part, byte value);
+    void setPart(byte part, byte value);
     // void setSegment(byte segment, bool show);
     // void setSegmentRange(byte first, byte last, bool show);
-    // void setLedRange(byte first, byte last, bool show);
+    void setLed(byte led, bool show);
+    void setLedRange(byte first, byte last, bool show);
     void clear();
     void setAll();
     void hide();
