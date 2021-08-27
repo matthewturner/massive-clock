@@ -34,12 +34,21 @@ void test_first_digit_one(void)
     assert();
 }
 
+void test_second_digit_three(void)
+{
+    expected.setLedRange(16, 21, true);
+    expected.setLedRange(24, 27, true);
+    target.setDigit(1, 3);
+    assert();
+}
+
 int main(int argc, char **argv)
 {
     UNITY_BEGIN();
     RUN_TEST(test_first_digit_eight);
     RUN_TEST(test_first_digit_zero);
     RUN_TEST(test_first_digit_one);
+    RUN_TEST(test_second_digit_three);
     UNITY_END();
 
     return 0;
