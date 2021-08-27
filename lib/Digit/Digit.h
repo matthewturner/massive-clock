@@ -3,17 +3,17 @@
 
 #include "common.h"
 
-const byte LEDS_PER_SEGMENT = 2;
+const byte LEDS_PER_SEGMENT = 3;
 const byte SEGMENTS_PER_DIGIT = 7;
 const byte LEDS_PER_DIGIT = LEDS_PER_SEGMENT * SEGMENTS_PER_DIGIT;
 
-const byte SEG_TOP_LEFT = 0;
+const byte SEG_TOP_LEFT = 2;
 const byte SEG_TOP = 1;
-const byte SEG_TOP_RIGHT = 2;
+const byte SEG_TOP_RIGHT = 0;
 const byte SEG_MIDDLE = 3;
-const byte SEG_BOTTOM_LEFT = 4;
+const byte SEG_BOTTOM_LEFT = 6;
 const byte SEG_BOTTOM = 5;
-const byte SEG_BOTTOM_RIGHT = 6;
+const byte SEG_BOTTOM_RIGHT = 4;
 
 class Digit
 {

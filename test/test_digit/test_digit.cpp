@@ -13,28 +13,28 @@ void setUp(void)
 
 void test_segment_zero(void)
 {
-    expected.setLedRange(0, 1, true);
+    expected.setLedRange(0, 2, true);
     target.setSegment(0, true);
     assert();
 }
 
 void test_segment_one(void)
 {
-    expected.setLedRange(2, 3, true);
+    expected.setLedRange(3, 5, true);
     target.setSegment(1, true);
     assert();
 }
 
 void test_segment_two(void)
 {
-    expected.setLedRange(4, 5, true);
+    expected.setLedRange(6, 8, true);
     target.setSegment(2, true);
     assert();
 }
 
 void test_segment_range_one_two(void)
 {
-    expected.setLedRange(2, 5, true);
+    expected.setLedRange(3, 8, true);
     target.setSegmentRange(1, 2, true);
     assert();
 }
@@ -56,15 +56,17 @@ void test_zero(void)
 
 void test_one(void)
 {
-    expected.setSegmentRange(2, 2, true);
-    expected.setSegmentRange(6, 6, true);
+    expected.setSegmentRange(0, 0, true);
+    expected.setSegmentRange(4, 4, true);
     target.set(1);
     assert();
 }
 
 void test_two(void)
 {
-    expected.setSegmentRange(1, 5, true);
+    expected.setSegmentRange(0, 1, true);
+    expected.setSegmentRange(3, 3, true);
+    expected.setSegmentRange(5, 6, true);
     target.set(2);
     assert();
 }

@@ -13,31 +13,31 @@ void setUp(void)
 
 void test_first_digit_eight(void)
 {
-    expected.setLedRange(0, 13, true);
+    expected.setLedRange(0, 20, true);
     target.setDigit(0, 8);
     assert();
 }
 
 void test_first_digit_zero(void)
 {
-    expected.setLedRange(0, 5, true);
-    expected.setLedRange(8, 13, true);
+    expected.setLedRange(0, 8, true);
+    expected.setLedRange(12, 20, true);
     target.setDigit(0, 0);
     assert();
 }
 
 void test_first_digit_one(void)
 {
-    expected.setLedRange(4, 5, true);
-    expected.setLedRange(12, 13, true);
+    expected.setLedRange(0, 2, true);
+    expected.setLedRange(12, 14, true);
     target.setDigit(0, 1);
     assert();
 }
 
 void test_second_digit_three(void)
 {
-    expected.setLedRange(16, 21, true);
-    expected.setLedRange(24, 27, true);
+    expected.setLedRange(21, 26, true);
+    expected.setLedRange(30, 38, true);
     target.setDigit(1, 3);
     assert();
 }
