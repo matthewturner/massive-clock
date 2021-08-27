@@ -1,18 +1,42 @@
 #include "main.h"
 
-Dependency dependency;
-
 void setup()
 {
   Serial.begin(9600);
 
+  FastLED.addLeds<APA102, DATA_PIN, CLOCK_PIN, BGR>(physicalLeds, NUM_LEDS);
+  FastLED.setBrightness(10);
+
   Serial.println("Setup complete. Continuing...");
 }
 
+byte counter = 0;
+
 void loop()
 {
-  if (dependency.method())
+  display.setPart(0, 0);
+  display.setPart(1, counter);
+  showDigits();
+  counter++;
+  if (counter >= 100)
   {
-    Serial.println("Was true");
+    counter = 0;
   }
+  delay(100);
+}
+
+void showDigits()
+{
+  for (byte i = 0; i < NUM_LEDS; i++)
+  {
+    if (display.led(i))
+    {
+      physicalLeds[i] = CRGB::Purple;
+    }
+    else
+    {
+      physicalLeds[i] = CRGB::Black;
+    }
+  }
+  FastLED.show();
 }
