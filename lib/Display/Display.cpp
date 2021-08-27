@@ -2,16 +2,23 @@
 
 bool Display::led(byte led)
 {
-  byte digitForLed = led / 4 / LEDS_PER_DIGIT;
-  byte ledInDigit = led % (4 * LEDS_PER_DIGIT);
-  return _digits[digitForLed].led(ledInDigit);
+  return digitFor(led)->led(offset(led));
+}
+
+Digit *Display::digitFor(byte led)
+{
+  byte digitForLed = led / NUM_DIGITS / LEDS_PER_DIGIT;
+  return &_digits[digitForLed];
+}
+
+byte Display::offset(byte led)
+{
+  return led % (NUM_DIGITS * LEDS_PER_DIGIT);
 }
 
 void Display::setLed(byte led, bool show)
 {
-  byte digitForLed = led / 4 / LEDS_PER_DIGIT;
-  byte ledInDigit = led % (4 * LEDS_PER_DIGIT);
-  _digits[digitForLed].setLed(ledInDigit, show);
+  digitFor(led)->setLed(offset(led), show);
 }
 
 void Display::clear()
@@ -34,20 +41,10 @@ void Display::setPart(byte part, byte value)
   setDigit(1 + offset, (value - (value % 10)) / 10);
 }
 
-// void Display::setSegmentRange(byte first, byte last, bool show)
-// {
-//   for (byte i = first; i <= last; i++)
-//   {
-//     _segments[i] = show;
-//   }
-// }
-
 void Display::setLedRange(byte first, byte last, bool show)
 {
   for (byte i = first; i <= last; i++)
   {
-    byte digitForLed = i / 4 / LEDS_PER_DIGIT;
-    byte ledInDigit = i % (4 * LEDS_PER_DIGIT);
-    _digits[digitForLed].setLed(ledInDigit, show);
+    digitFor(i)->setLed(offset(i), show);
   }
 }
