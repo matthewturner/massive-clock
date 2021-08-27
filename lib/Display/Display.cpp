@@ -5,6 +5,15 @@ bool Display::led(byte led)
   return _leds[led];
 }
 
+void Display::clear()
+{
+  bufferAllSegments(false);
+  for (byte i = 0; i < NUM_LEDS; i++)
+  {
+    _leds[i] = false;
+  }
+}
+
 void Display::setDigit(byte digit, byte value)
 {
   bufferDigit(value);
@@ -27,82 +36,88 @@ void Display::applyDigit(byte digit)
   {
     offset += LEDS_IN_SEPARATOR;
   }
-  for (byte i = 0; i < LEDS_PER_DIGIT; i++)
+  for (byte s = 0; s < SEGMENTS_PER_DIGIT; s++)
   {
-    _leds[i + offset] = _segments[i];
+    for (byte i = 0; i < LEDS_PER_SEGMENT; i++)
+    {
+      _leds[i + (s * LEDS_PER_SEGMENT) + offset] = _segments[s];
+    }
   }
 }
 
 void Display::bufferDigit(byte value)
 {
-  showAllSegments();
+  bufferAllSegments(true);
 
   switch (value)
   {
   case 0:
-    hideSegment(SEG_MIDDLE);
+    bufferSegment(SEG_MIDDLE, false);
     break;
   case 1:
-    hideSegment(SEG_TOP_LEFT);
-    hideSegment(SEG_TOP);
-    hideSegment(SEG_MIDDLE);
-    hideSegment(SEG_BOTTOM_LEFT);
-    hideSegment(SEG_BOTTOM);
+    bufferSegment(SEG_TOP_LEFT, false);
+    bufferSegment(SEG_TOP, false);
+    bufferSegment(SEG_MIDDLE, false);
+    bufferSegment(SEG_BOTTOM_LEFT, false);
+    bufferSegment(SEG_BOTTOM, false);
     break;
   case 2:
-    hideSegment(SEG_TOP_LEFT);
-    hideSegment(SEG_BOTTOM_RIGHT);
+    bufferSegment(SEG_TOP_LEFT, false);
+    bufferSegment(SEG_BOTTOM_RIGHT, false);
     break;
   case 3:
-    hideSegment(SEG_TOP_LEFT);
-    hideSegment(SEG_BOTTOM_LEFT);
+    bufferSegment(SEG_TOP_LEFT, false);
+    bufferSegment(SEG_BOTTOM_LEFT, false);
     break;
   case 4:
-    hideSegment(SEG_TOP);
-    hideSegment(SEG_TOP_RIGHT);
-    hideSegment(SEG_BOTTOM_LEFT);
-    hideSegment(SEG_BOTTOM);
+    bufferSegment(SEG_TOP, false);
+    bufferSegment(SEG_TOP_RIGHT, false);
+    bufferSegment(SEG_BOTTOM_LEFT, false);
+    bufferSegment(SEG_BOTTOM, false);
     break;
   case 5:
-    hideSegment(SEG_TOP_RIGHT);
-    hideSegment(SEG_BOTTOM_LEFT);
+    bufferSegment(SEG_TOP_RIGHT, false);
+    bufferSegment(SEG_BOTTOM_LEFT, false);
     break;
   case 6:
-    hideSegment(SEG_TOP_RIGHT);
+    bufferSegment(SEG_TOP_RIGHT, false);
     break;
   case 7:
-    hideSegment(SEG_TOP_LEFT);
-    hideSegment(SEG_BOTTOM_LEFT);
-    hideSegment(SEG_BOTTOM);
+    bufferSegment(SEG_TOP_LEFT, false);
+    bufferSegment(SEG_BOTTOM_LEFT, false);
+    bufferSegment(SEG_BOTTOM, false);
     break;
   case 9:
-    hideSegment(SEG_BOTTOM_LEFT);
+    bufferSegment(SEG_BOTTOM_LEFT, false);
     break;
   }
 }
 
-void Display::showAllSegments()
+void Display::bufferAllSegments(bool show)
 {
-  for (byte i = 0; i < LEDS_PER_DIGIT; i++)
+  for (byte i = 0; i < SEGMENTS_PER_DIGIT; i++)
   {
-    _segments[i] = true;
+    _segments[i] = show;
   }
 }
 
-void Display::showSegment(byte segment)
+void Display::bufferSegment(byte segment, bool show)
 {
-  setSegment(segment, true);
+  _segments[segment] = show;
 }
 
-void Display::hideSegment(byte segment)
+void Display::setSegmentRange(byte first, byte last, bool show)
 {
-  setSegment(segment, false);
-}
-
-void Display::setSegment(byte segment, bool show)
-{
-  for (byte i = 0; i < LEDS_PER_SEGMENT; i++)
+  for (byte i = first; i <= last; i++)
   {
-    _segments[segment + i] = show;
+    _segments[i] = show;
+  }
+}
+
+void Display::setLedRange(byte first, byte last, bool show)
+{
+  for (byte i = first; i <= last; i++)
+  {
+    _leds[i] = show;
   }
 }
