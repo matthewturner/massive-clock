@@ -5,8 +5,8 @@
 #include "Digit.h"
 #include "Separator.h"
 
-const byte NUM_LEDS = 60;
-const byte NUM_DIGITS = 4;
+const byte NUM_LEDS = 42;
+const byte NUM_DIGITS = 2;
 
 class Display
 {

@@ -76,6 +76,13 @@ void test_update_from_updates_all(void)
     assert();
 }
 
+void test_set_part_max(void)
+{
+    expected.setLedRange(0, 41, true);
+    target.setPart(0, 88, false);
+    assert();
+}
+
 int main(int argc, char **argv)
 {
     UNITY_BEGIN();
@@ -88,6 +95,7 @@ int main(int argc, char **argv)
     RUN_TEST(test_update_from_returns_false_if_no_update_required);
     RUN_TEST(test_update_from_returns_true_if_update_required);
     RUN_TEST(test_update_from_updates_all);
+    RUN_TEST(test_set_part_max);
     UNITY_END();
 
     return 0;

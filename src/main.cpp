@@ -24,6 +24,10 @@ void setup()
     // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
   }
 
+  Serial.println("Testing display 88...");
+  display.setPart(0, 88, false);
+  delay(500);
+
   Serial.println("Setup complete. Continuing...");
 }
 
