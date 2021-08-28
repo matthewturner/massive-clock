@@ -53,3 +53,17 @@ void Display::setLedRange(byte first, byte last, bool show)
     digitFor(i)->setLed(offset(i), show);
   }
 }
+
+bool Display::updateFrom(Display *other)
+{
+  bool updated = false;
+  for (byte i = 0; i < NUM_LEDS; i++)
+  {
+    if (led(i) != other->led(i))
+    {
+      setLed(i, other->led(i));
+      updated = true;
+    }
+  }
+  return updated;
+}

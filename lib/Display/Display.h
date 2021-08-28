@@ -20,6 +20,7 @@ public:
     void setAll();
     void hide();
     void show();
+    bool updateFrom(Display *other);
 
 private:
     Digit _digits[NUM_DIGITS];

@@ -57,6 +57,25 @@ void test_part_with_leading_zero(void)
     assert();
 }
 
+void test_update_from_returns_false_if_no_update_required(void)
+{
+    TEST_ASSERT_FALSE(target.updateFrom(&expected));
+}
+
+void test_update_from_returns_true_if_update_required(void)
+{
+    expected.setLed(1, true);
+    TEST_ASSERT_TRUE(target.updateFrom(&expected));
+}
+
+void test_update_from_updates_all(void)
+{
+    expected.setLed(1, true);
+    expected.setLed(5, true);
+    target.updateFrom(&expected);
+    assert();
+}
+
 int main(int argc, char **argv)
 {
     UNITY_BEGIN();
@@ -66,6 +85,9 @@ int main(int argc, char **argv)
     RUN_TEST(test_second_digit_three);
     RUN_TEST(test_part_no_leading_zero);
     RUN_TEST(test_part_with_leading_zero);
+    RUN_TEST(test_update_from_returns_false_if_no_update_required);
+    RUN_TEST(test_update_from_returns_true_if_update_required);
+    RUN_TEST(test_update_from_updates_all);
     UNITY_END();
 
     return 0;
