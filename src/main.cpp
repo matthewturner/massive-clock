@@ -10,19 +10,30 @@ void setup()
   Serial.println("Setup complete. Continuing...");
 }
 
-byte counter = 0;
+byte hourCounter = 0;
+byte minuteCounter = 0;
 
 void loop()
 {
-  display.setPart(0, counter, true);
-  display.setPart(1, counter, false);
+  display.setPart(0, hourCounter, false);
   showDigits();
-  counter++;
-  if (counter >= 100)
+  delay(2000);
+  display.setPart(0, minuteCounter, true);
+  showDigits();
+  delay(2000);
+  display.clear();
+  showDigits();
+  delay(1000);
+  minuteCounter++;
+  if (minuteCounter >= 60)
   {
-    counter = 0;
+    minuteCounter = 0;
+    hourCounter++;
+    if (hourCounter >= 24)
+    {
+      hourCounter = 0;
+    }
   }
-  delay(400);
 }
 
 void showDigits()
