@@ -14,7 +14,7 @@ byte counter = 0;
 
 void loop()
 {
-  display.setPart(0, 0);
+  display.setPart(0, counter);
   display.setPart(1, counter);
   showDigits();
   counter++;
@@ -22,7 +22,7 @@ void loop()
   {
     counter = 0;
   }
-  delay(100);
+  delay(400);
 }
 
 void showDigits()
