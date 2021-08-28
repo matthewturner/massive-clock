@@ -34,11 +34,16 @@ void Display::setDigit(byte digit, byte value)
   _digits[digit].set(value);
 }
 
-void Display::setPart(byte part, byte value)
+void Display::setPart(byte part, byte value, bool leadingZero)
 {
   byte offset = part * 2;
-  setDigit(0 + offset, value % 10);
-  setDigit(1 + offset, (value - (value % 10)) / 10);
+  byte tens = (value - (value % 10)) / 10;
+  byte unit = value % 10;
+  setDigit(0 + offset, unit);
+  if (leadingZero || tens > 0)
+  {
+    setDigit(1 + offset, tens);
+  }
 }
 
 void Display::setLedRange(byte first, byte last, bool show)

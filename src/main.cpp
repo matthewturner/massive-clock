@@ -14,8 +14,8 @@ byte counter = 0;
 
 void loop()
 {
-  display.setPart(0, counter);
-  display.setPart(1, counter);
+  display.setPart(0, counter, true);
+  display.setPart(1, counter, false);
   showDigits();
   counter++;
   if (counter >= 100)

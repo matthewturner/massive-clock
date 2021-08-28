@@ -42,6 +42,21 @@ void test_second_digit_three(void)
     assert();
 }
 
+void test_part_no_leading_zero(void)
+{
+    expected.setLedRange(0, 20, true);
+    target.setPart(0, 8, false);
+    assert();
+}
+
+void test_part_with_leading_zero(void)
+{
+    expected.setLedRange(0, 41, true);
+    expected.setLedRange(30, 32, false);
+    target.setPart(0, 8, true);
+    assert();
+}
+
 int main(int argc, char **argv)
 {
     UNITY_BEGIN();
@@ -49,6 +64,8 @@ int main(int argc, char **argv)
     RUN_TEST(test_first_digit_zero);
     RUN_TEST(test_first_digit_one);
     RUN_TEST(test_second_digit_three);
+    RUN_TEST(test_part_no_leading_zero);
+    RUN_TEST(test_part_with_leading_zero);
     UNITY_END();
 
     return 0;

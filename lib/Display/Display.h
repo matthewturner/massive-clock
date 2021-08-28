@@ -13,7 +13,7 @@ class Display
 public:
     bool led(byte led);
     void setDigit(byte digit, byte value);
-    void setPart(byte part, byte value);
+    void setPart(byte part, byte value, bool leadingZero);
     void setLed(byte led, bool show);
     void setLedRange(byte first, byte last, bool show);
     void clear();
