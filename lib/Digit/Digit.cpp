@@ -39,7 +39,6 @@ void Digit::set(byte value)
     break;
   case 4:
     setSegment(SEG_TOP, false);
-    setSegment(SEG_TOP_RIGHT, false);
     setSegment(SEG_BOTTOM_LEFT, false);
     setSegment(SEG_BOTTOM, false);
     break;
@@ -52,6 +51,7 @@ void Digit::set(byte value)
     break;
   case 7:
     setSegment(SEG_TOP_LEFT, false);
+    setSegment(SEG_MIDDLE, false);
     setSegment(SEG_BOTTOM_LEFT, false);
     setSegment(SEG_BOTTOM, false);
     break;

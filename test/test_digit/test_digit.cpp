@@ -71,6 +71,22 @@ void test_two(void)
     assert();
 }
 
+void test_four(void)
+{
+    expected.setSegmentRange(0, 0, true);
+    expected.setSegmentRange(2, 4, true);
+    target.set(4);
+    assert();
+}
+
+void test_seven(void)
+{
+    expected.setSegmentRange(0, 1, true);
+    expected.setSegmentRange(4, 4, true);
+    target.set(7);
+    assert();
+}
+
 int main(int argc, char **argv)
 {
     UNITY_BEGIN();
@@ -82,6 +98,8 @@ int main(int argc, char **argv)
     RUN_TEST(test_zero);
     RUN_TEST(test_one);
     RUN_TEST(test_two);
+    RUN_TEST(test_four);
+    RUN_TEST(test_seven);
     UNITY_END();
 
     return 0;
