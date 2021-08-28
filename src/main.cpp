@@ -7,33 +7,44 @@ void setup()
   FastLED.addLeds<APA102, DATA_PIN, CLOCK_PIN, BGR>(physicalLeds, NUM_LEDS);
   FastLED.setBrightness(10);
 
+  while (!Serial)
+    ;
+
+  if (!clock.begin())
+  {
+    Serial.println("Couldn't find Realtime Clock");
+    Serial.flush();
+    abort();
+  }
+
+  if (clock.lostPower())
+  {
+    Serial.println("Realtime Clock lost power, setting the time...");
+    clock.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
+  }
+
   Serial.println("Setup complete. Continuing...");
 }
 
-byte hourCounter = 0;
-byte minuteCounter = 0;
-
 void loop()
 {
-  display.setPart(0, hourCounter, false);
+  DateTime now = clock.now();
+  byte hour = now.hour();
+  byte minute = now.minute();
+  Serial.print(hour);
+  Serial.print(":");
+  Serial.println(minute);
+
+  display.setPart(0, hour, false);
   showDigits();
   delay(2000);
-  display.setPart(0, minuteCounter, true);
+  display.setPart(0, minute, true);
   showDigits();
   delay(2000);
   display.clear();
   showDigits();
   delay(1000);
-  minuteCounter++;
-  if (minuteCounter >= 60)
-  {
-    minuteCounter = 0;
-    hourCounter++;
-    if (hourCounter >= 24)
-    {
-      hourCounter = 0;
-    }
-  }
 }
 
 void showDigits()

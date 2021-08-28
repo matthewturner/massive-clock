@@ -13,7 +13,12 @@ Digit *Display::digitFor(byte led)
 
 byte Display::offset(byte led)
 {
-  return led % (NUM_DIGITS * LEDS_PER_DIGIT);
+  byte offset = led % (NUM_DIGITS * LEDS_PER_DIGIT);
+  if (offset >= LEDS_PER_DIGIT)
+  {
+    return LEDS_PER_DIGIT - 1;
+  }
+  return offset;
 }
 
 void Display::setLed(byte led, bool show)
