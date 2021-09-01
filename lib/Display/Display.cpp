@@ -2,13 +2,13 @@
 
 bool Display::led(byte led)
 {
-  return digitFor(led)->led(offset(led));
+  return componentFor(led)->led(offset(led));
 }
 
-Digit *Display::digitFor(byte led)
+Component *Display::componentFor(byte led)
 {
-  byte digitForLed = led / NUM_DIGITS / LEDS_PER_DIGIT;
-  return &_digits[digitForLed];
+  byte componentForLed = led / NUM_DIGITS / LEDS_PER_DIGIT;
+  return &_digits[componentForLed];
 }
 
 byte Display::offset(byte led)
@@ -19,7 +19,7 @@ byte Display::offset(byte led)
 
 void Display::setLed(byte led, bool show)
 {
-  digitFor(led)->setLed(offset(led), show);
+  componentFor(led)->setLed(offset(led), show);
 }
 
 void Display::clear()
@@ -51,7 +51,7 @@ void Display::setLedRange(byte first, byte last, bool show)
 {
   for (byte i = first; i <= last; i++)
   {
-    digitFor(i)->setLed(offset(i), show);
+    componentFor(i)->setLed(offset(i), show);
   }
 }
 
@@ -67,4 +67,8 @@ bool Display::updateFrom(Display *other)
     }
   }
   return updated;
+}
+
+void Display::setSeparator(bool show)
+{
 }

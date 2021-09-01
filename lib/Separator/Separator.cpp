@@ -9,7 +9,7 @@ void Separator::setAll(bool show)
 {
   for (byte i = 0; i < LEDS_IN_SEPARATOR; i++)
   {
-    set(i, show);
+    setLed(i, show);
   }
 }
 
@@ -28,7 +28,7 @@ void Separator::hide()
   setAll(false);
 }
 
-void Separator::set(byte led, bool show)
+void Separator::setLed(byte led, bool show)
 {
   _leds[led] = show;
 }
@@ -37,6 +37,6 @@ void Separator::setRange(byte first, byte last, bool show)
 {
   for (byte i = first; i <= last; i++)
   {
-    set(i, show);
+    setLed(i, show);
   }
 }

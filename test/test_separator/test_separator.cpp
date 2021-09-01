@@ -14,7 +14,7 @@ void setUp(void)
 void test_segment_half(void)
 {
     expected.setRange(0, 0, true);
-    target.set(0, true);
+    target.setLed(0, true);
     assert();
 }
 

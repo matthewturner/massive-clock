@@ -20,13 +20,14 @@ public:
     void setAll();
     void hide();
     void show();
+    void setSeparator(bool show);
     bool updateFrom(Display *other);
 
 private:
     Digit _digits[NUM_DIGITS];
     Separator _separator;
 
-    Digit *digitFor(byte led);
+    Component *componentFor(byte led);
     byte offset(byte led);
 };
 

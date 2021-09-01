@@ -2,6 +2,7 @@
 #define Digit_h
 
 #include "common.h"
+#include "Component.h"
 
 const byte LEDS_PER_SEGMENT = 3;
 const byte SEGMENTS_PER_DIGIT = 7;
@@ -15,17 +16,17 @@ const byte SEG_BOTTOM_LEFT = 6;
 const byte SEG_BOTTOM = 5;
 const byte SEG_BOTTOM_RIGHT = 4;
 
-class Digit
+class Digit : public Component
 {
 public:
-    bool led(byte led);
+    bool led(byte led) override;
     void set(byte value);
     void setSegment(byte segment, bool show);
     void setAll(bool show);
     void setSegmentRange(byte first, byte last, bool show);
     void setLedRange(byte first, byte last, bool show);
-    void setLed(byte led, bool show);
-    void clear();
+    void setLed(byte led, bool show) override;
+    void clear() override;
 
 private:
     bool _leds[LEDS_PER_DIGIT];
