@@ -11,14 +11,30 @@ bool Display::led(byte led)
 
 Component *Display::componentFor(byte led)
 {
-  byte componentForLed = led / LEDS_PER_DIGIT;
-  return _components[componentForLed];
+  byte remaining = led;
+  for (byte i = 0; i < NUM_COMPONENTS; i++)
+  {
+    if (remaining < _components[i]->ledCount())
+    {
+      return _components[i];
+    }
+    remaining -= _components[i]->ledCount();
+  }
+  return NULL;
 }
 
 byte Display::offset(byte led)
 {
-  byte offset = led % LEDS_PER_DIGIT;
-  return offset;
+  byte remaining = led;
+  for (byte i = 0; i < NUM_COMPONENTS; i++)
+  {
+    if (remaining < _components[i]->ledCount())
+    {
+      return remaining;
+    }
+    remaining -= _components[i]->ledCount();
+  }
+  return remaining;
 }
 
 void Display::setLed(byte led, bool show)
@@ -42,6 +58,10 @@ void Display::setDigit(byte digit, byte value)
 void Display::setPart(byte part, byte value, bool leadingZero)
 {
   byte offset = part * 2;
+  if (offset > 0)
+  {
+    offset++;
+  }
   byte tens = (value - (value % 10)) / 10;
   byte unit = value % 10;
   setDigit(0 + offset, unit);
@@ -75,4 +95,5 @@ bool Display::updateFrom(Display *other)
 
 void Display::setSeparator(bool show)
 {
+  _separator.setAll(show);
 }

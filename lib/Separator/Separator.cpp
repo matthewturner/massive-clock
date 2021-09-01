@@ -13,6 +13,11 @@ void Separator::setAll(bool show)
   }
 }
 
+byte Separator::ledCount()
+{
+  return LEDS_IN_SEPARATOR;
+}
+
 void Separator::clear()
 {
   setAll(false);

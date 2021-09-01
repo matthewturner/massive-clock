@@ -17,6 +17,7 @@ public:
     void hide();
     void clear() override;
     void setAll(bool show);
+    byte ledCount() override;
 
 private:
     bool _leds[LEDS_IN_SEPARATOR];

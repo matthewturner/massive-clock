@@ -13,6 +13,8 @@ public:
     virtual bool led(byte) = 0;
 
     virtual void clear() = 0;
+
+    virtual byte ledCount() = 0;
 };
 
 #endif

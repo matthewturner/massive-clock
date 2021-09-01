@@ -27,6 +27,7 @@ public:
     void setLedRange(byte first, byte last, bool show);
     void setLed(byte led, bool show) override;
     void clear() override;
+    byte ledCount() override;
 
 private:
     bool _leds[LEDS_PER_DIGIT];

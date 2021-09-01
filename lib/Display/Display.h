@@ -7,7 +7,7 @@
 #include "Separator.h"
 
 const byte NUM_LEDS = 42;
-const byte NUM_COMPONENTS = 2;
+const byte NUM_COMPONENTS = 5;
 
 class Display
 {
@@ -26,10 +26,12 @@ public:
     bool updateFrom(Display *other);
 
 private:
-    Component *_components[NUM_COMPONENTS] = {&_digit1, &_digit2};
-    Separator _separator;
+    Component *_components[NUM_COMPONENTS] = {&_digit0, &_digit1, &_separator, &_digit2, &_digit3};
+    Digit _digit0;
     Digit _digit1;
+    Separator _separator;
     Digit _digit2;
+    Digit _digit3;
 
     Component *componentFor(byte led);
     byte offset(byte led);
