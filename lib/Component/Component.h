@@ -8,6 +8,7 @@ class Component
 public:
     Component();
 
+    virtual void set(byte value) = 0;
     virtual void setLed(byte led, bool show) = 0;
     virtual bool led(byte) = 0;
 

@@ -28,6 +28,10 @@ void Separator::hide()
   setAll(false);
 }
 
+void Separator::set(byte value)
+{
+}
+
 void Separator::setLed(byte led, bool show)
 {
   _leds[led] = show;

@@ -1,5 +1,9 @@
 #include "Display.h"
 
+Display::Display()
+{
+}
+
 bool Display::led(byte led)
 {
   return componentFor(led)->led(offset(led));
@@ -7,13 +11,13 @@ bool Display::led(byte led)
 
 Component *Display::componentFor(byte led)
 {
-  byte componentForLed = led / NUM_DIGITS / LEDS_PER_DIGIT;
-  return &_digits[componentForLed];
+  byte componentForLed = led / LEDS_PER_DIGIT;
+  return _components[componentForLed];
 }
 
 byte Display::offset(byte led)
 {
-  byte offset = led % (NUM_DIGITS * LEDS_PER_DIGIT);
+  byte offset = led % LEDS_PER_DIGIT;
   return offset;
 }
 
@@ -24,15 +28,15 @@ void Display::setLed(byte led, bool show)
 
 void Display::clear()
 {
-  for (byte i = 0; i < NUM_DIGITS; i++)
+  for (byte i = 0; i < NUM_COMPONENTS; i++)
   {
-    _digits[i].clear();
+    _components[i]->clear();
   }
 }
 
 void Display::setDigit(byte digit, byte value)
 {
-  _digits[digit].set(value);
+  _components[digit]->set(value);
 }
 
 void Display::setPart(byte part, byte value, bool leadingZero)

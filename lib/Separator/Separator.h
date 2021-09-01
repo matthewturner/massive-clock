@@ -10,6 +10,7 @@ class Separator : public Component
 {
 public:
     bool led(byte led) override;
+    void set(byte value) override;
     void setLed(byte led, bool show) override;
     void setRange(byte first, byte last, bool show);
     void show();
