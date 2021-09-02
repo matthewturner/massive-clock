@@ -29,7 +29,17 @@ void setup()
 
   Serial.println("Testing display 88...");
   display.setPart(0, 88, false);
-  delay(500);
+  show();
+  delay(200);
+  display.clear();
+  display.setSeparator(true);
+  show();
+  delay(200);
+  display.clear();
+  display.setPart(1, 88, false);
+  show();
+  delay(200);
+  display.clear();
 
   mgr.addListener(new EvtTimeListener(500, true, (EvtAction)showTime));
 
@@ -44,30 +54,16 @@ void loop()
 bool showTime()
 {
   now = clock.now();
-  byte hour = now.hour();
-  byte minute = now.minute();
 
-  if (showing <= 2)
-  {
-    display.setPart(0, hour, false);
-    showing++;
-  }
-  else if (showing <= 4)
-  {
-    display.setPart(0, minute, true);
-    showing++;
-  }
-  else
-  {
-    display.clear();
-    showing = 0;
-  }
-  showDigits();
+  display.setPart(1, now.hour(), false);
+  display.setPart(0, now.minute(), true);
+  display.setSeparator(true);
+  show();
 
   return false;
 }
 
-void showDigits()
+void show()
 {
   CRGB::HTMLColorCode colorCode = determineColorCode();
 
