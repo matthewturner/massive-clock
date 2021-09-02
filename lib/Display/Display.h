@@ -6,7 +6,7 @@
 #include "Digit.h"
 #include "Separator.h"
 
-const byte NUM_LEDS = 42;
+const byte NUM_LEDS = 86;
 const byte NUM_COMPONENTS = 5;
 
 class Display
