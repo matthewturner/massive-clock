@@ -20,7 +20,7 @@ Component *Display::componentFor(byte led)
     }
     remaining -= _components[i]->ledCount();
   }
-  return NULL;
+  return nullptr;
 }
 
 byte Display::offset(byte led)
