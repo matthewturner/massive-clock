@@ -29,6 +29,7 @@ void setup()
 
   Serial.println("Testing display 88...");
   display.setPart(0, 88, false);
+  display.setSeparator(true);
   delay(500);
 
   mgr.addListener(new EvtTimeListener(500, true, (EvtAction)showTime));
@@ -44,24 +45,10 @@ void loop()
 bool showTime()
 {
   now = clock.now();
-  byte hour = now.hour();
-  byte minute = now.minute();
 
-  if (showing <= 2)
-  {
-    display.setPart(0, hour, false);
-    showing++;
-  }
-  else if (showing <= 4)
-  {
-    display.setPart(0, minute, true);
-    showing++;
-  }
-  else
-  {
-    display.clear();
-    showing = 0;
-  }
+  display.setPart(1, now.hour(), false);
+  display.setPart(0, now.minute(), true);
+  display.setSeparator(true);
   showDigits();
 
   return false;

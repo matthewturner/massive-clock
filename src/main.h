@@ -20,7 +20,6 @@ Display display;
 RTC_DS3231 clock;
 EvtManager mgr;
 DateTime now;
-byte showing = 0;
 
 void showDigits();
 bool showTime();
