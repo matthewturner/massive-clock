@@ -21,7 +21,7 @@ RTC_DS3231 clock;
 EvtManager mgr;
 DateTime now;
 
-void showDigits();
+void show();
 bool showTime();
 CRGB::HTMLColorCode determineColorCode();
 void populateColorCodes();
