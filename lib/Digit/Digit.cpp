@@ -13,6 +13,11 @@ void Digit::clear()
   }
 }
 
+byte Digit::ledCount()
+{
+  return LEDS_PER_DIGIT;
+}
+
 void Digit::set(byte value)
 {
   setAll(true);

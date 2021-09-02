@@ -1,43 +1,67 @@
 #include "Display.h"
 
-bool Display::led(byte led)
+Display::Display()
 {
-  return digitFor(led)->led(offset(led));
 }
 
-Digit *Display::digitFor(byte led)
+bool Display::led(byte led)
 {
-  byte digitForLed = led / NUM_DIGITS / LEDS_PER_DIGIT;
-  return &_digits[digitForLed];
+  return componentFor(led)->led(offset(led));
+}
+
+Component *Display::componentFor(byte led)
+{
+  byte remaining = led;
+  for (byte i = 0; i < NUM_COMPONENTS; i++)
+  {
+    if (remaining < _components[i]->ledCount())
+    {
+      return _components[i];
+    }
+    remaining -= _components[i]->ledCount();
+  }
+  return nullptr;
 }
 
 byte Display::offset(byte led)
 {
-  byte offset = led % (NUM_DIGITS * LEDS_PER_DIGIT);
-  return offset;
+  byte remaining = led;
+  for (byte i = 0; i < NUM_COMPONENTS; i++)
+  {
+    if (remaining < _components[i]->ledCount())
+    {
+      return remaining;
+    }
+    remaining -= _components[i]->ledCount();
+  }
+  return remaining;
 }
 
 void Display::setLed(byte led, bool show)
 {
-  digitFor(led)->setLed(offset(led), show);
+  componentFor(led)->setLed(offset(led), show);
 }
 
 void Display::clear()
 {
-  for (byte i = 0; i < NUM_DIGITS; i++)
+  for (byte i = 0; i < NUM_COMPONENTS; i++)
   {
-    _digits[i].clear();
+    _components[i]->clear();
   }
 }
 
 void Display::setDigit(byte digit, byte value)
 {
-  _digits[digit].set(value);
+  _components[digit]->set(value);
 }
 
 void Display::setPart(byte part, byte value, bool leadingZero)
 {
   byte offset = part * 2;
+  if (offset > 0)
+  {
+    offset++;
+  }
   byte tens = (value - (value % 10)) / 10;
   byte unit = value % 10;
   setDigit(0 + offset, unit);
@@ -51,7 +75,7 @@ void Display::setLedRange(byte first, byte last, bool show)
 {
   for (byte i = first; i <= last; i++)
   {
-    digitFor(i)->setLed(offset(i), show);
+    componentFor(i)->setLed(offset(i), show);
   }
 }
 
@@ -67,4 +91,9 @@ bool Display::updateFrom(Display *other)
     }
   }
   return updated;
+}
+
+void Display::setSeparator(bool show)
+{
+  _separator.setAll(show);
 }
