@@ -5,7 +5,7 @@ void setup()
   Serial.begin(9600);
 
   FastLED.addLeds<APA102, DATA_PIN, CLOCK_PIN, BGR>(physicalLeds, NUM_LEDS);
-  FastLED.setBrightness(10);
+  FastLED.setBrightness(5);
 
   while (!Serial)
     ;
@@ -55,10 +55,18 @@ bool showTime()
 {
   now = clock.now();
 
-  display.setPart(1, now.hour(), false);
-  display.setPart(0, now.minute(), true);
-  display.setSeparator(true);
+  if (now.hour() >= 6 && now.hour() <= 21)
+  {
+    display.setPart(1, now.hour(), false);
+    display.setPart(0, now.minute(), true);
+    display.setSeparator(true);
+    show();
+    return false;
+  }
+
+  display.hide();
   show();
+  return false;
 
   return false;
 }
