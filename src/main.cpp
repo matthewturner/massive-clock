@@ -10,36 +10,9 @@ void setup()
   while (!Serial)
     ;
 
-  // if (!clock.begin())
-  // {
-  //   Serial.println("Couldn't find Realtime Clock");
-  //   Serial.flush();
-  //   abort();
-  // }
-
-  // if (clock.lostPower())
-  // {
-  //   Serial.println("Realtime Clock lost power, setting the time...");
-  //   clock.adjust(DateTime(F(__DATE__), F(__TIME__)));
-  //   // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
-  // }
-
-  // Serial.println("Populating colors...");
-  // populateColorCodes();
-
-  // Serial.println("Testing display 88...");
-  // display.setPart(0, 88, false);
-  // show();
-  // delay(200);
-  // display.clear();
-  // display.setSeparator(true);
-  // show();
-  // delay(200);
-  // display.clear();
-  // display.setPart(1, 88, false);
-  // show();
-  // delay(200);
-  // display.clear();
+  // setupRealtimeClock();
+  // setupColorCodes();
+  // setupTest();
 
   mgr.addListener(new EvtTimeListener(500, true, (EvtAction)showTime));
 
@@ -53,11 +26,9 @@ void loop()
 
 bool showTime()
 {
-  int value = analogRead(A0);
-  Serial.print(value);
-  Serial.print(" -> ");
-  int brightness = map(value, 0, 400, 40, 0);
-  Serial.println(brightness);
+  byte bright = brightness.from(analogRead(A0));
+  FastLED.setBrightness(bright);
+  
   // now = clock.now();
 
   // display.setPart(1, now.hour(), false);
@@ -93,8 +64,10 @@ CRGB::HTMLColorCode determineColorCode()
   return colorCodesForHour[hour];
 }
 
-void populateColorCodes()
+void setupColorCodes()
 {
+  Serial.println("Populating colors...");
+
   // default night to red
   for (byte i = 0; i < HOURS_IN_DAY; i++)
   {
@@ -109,4 +82,38 @@ void populateColorCodes()
   // morning
   colorCodesForHour[6] = CRGB::Orange;
   colorCodesForHour[7] = CRGB::Green;
+}
+
+void setupRealtimeClock()
+{
+  if (!clock.begin())
+  {
+    Serial.println("Couldn't find Realtime Clock");
+    Serial.flush();
+    abort();
+  }
+
+  if (clock.lostPower())
+  {
+    Serial.println("Realtime Clock lost power, setting the time...");
+    clock.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
+  }
+}
+
+void setupTest()
+{
+  Serial.println("Testing display 88...");
+  display.setPart(0, 88, false);
+  show();
+  delay(200);
+  display.clear();
+  display.setSeparator(true);
+  show();
+  delay(200);
+  display.clear();
+  display.setPart(1, 88, false);
+  show();
+  delay(200);
+  display.clear();
 }

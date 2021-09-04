@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <FastLED.h>
 #include "Display.h"
+#include "Brightness.h"
 #include <RTClib.h>
 #include <Eventually.h>
 
@@ -20,10 +21,14 @@ Display display;
 RTC_DS3231 clock;
 EvtManager mgr;
 DateTime now;
+Brightness brightness;
 
 void show();
 bool showTime();
 CRGB::HTMLColorCode determineColorCode();
-void populateColorCodes();
 CRGB::HTMLColorCode colorCodesForHour[HOURS_IN_DAY];
+
+void setupColorCodes();
+void setupRealtimeClock();
+void setupTest();
 #endif
