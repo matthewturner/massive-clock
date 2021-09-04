@@ -10,36 +10,36 @@ void setup()
   while (!Serial)
     ;
 
-  if (!clock.begin())
-  {
-    Serial.println("Couldn't find Realtime Clock");
-    Serial.flush();
-    abort();
-  }
+  // if (!clock.begin())
+  // {
+  //   Serial.println("Couldn't find Realtime Clock");
+  //   Serial.flush();
+  //   abort();
+  // }
 
-  if (clock.lostPower())
-  {
-    Serial.println("Realtime Clock lost power, setting the time...");
-    clock.adjust(DateTime(F(__DATE__), F(__TIME__)));
-    // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
-  }
+  // if (clock.lostPower())
+  // {
+  //   Serial.println("Realtime Clock lost power, setting the time...");
+  //   clock.adjust(DateTime(F(__DATE__), F(__TIME__)));
+  //   // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
+  // }
 
-  Serial.println("Populating colors...");
-  populateColorCodes();
+  // Serial.println("Populating colors...");
+  // populateColorCodes();
 
-  Serial.println("Testing display 88...");
-  display.setPart(0, 88, false);
-  show();
-  delay(200);
-  display.clear();
-  display.setSeparator(true);
-  show();
-  delay(200);
-  display.clear();
-  display.setPart(1, 88, false);
-  show();
-  delay(200);
-  display.clear();
+  // Serial.println("Testing display 88...");
+  // display.setPart(0, 88, false);
+  // show();
+  // delay(200);
+  // display.clear();
+  // display.setSeparator(true);
+  // show();
+  // delay(200);
+  // display.clear();
+  // display.setPart(1, 88, false);
+  // show();
+  // delay(200);
+  // display.clear();
 
   mgr.addListener(new EvtTimeListener(500, true, (EvtAction)showTime));
 
@@ -53,12 +53,17 @@ void loop()
 
 bool showTime()
 {
-  now = clock.now();
+  int value = analogRead(A0);
+  Serial.print(value);
+  Serial.print(" -> ");
+  int brightness = map(value, 0, 400, 40, 0);
+  Serial.println(brightness);
+  // now = clock.now();
 
-  display.setPart(1, now.hour(), false);
-  display.setPart(0, now.minute(), true);
-  display.setSeparator(true);
-  show();
+  // display.setPart(1, now.hour(), false);
+  // display.setPart(0, now.minute(), true);
+  // display.setSeparator(true);
+  // show();
 
   return false;
 }
