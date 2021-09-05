@@ -5,43 +5,17 @@ void setup()
   Serial.begin(9600);
 
   FastLED.addLeds<APA102, DATA_PIN, CLOCK_PIN, BGR>(physicalLeds, NUM_LEDS);
-  FastLED.setBrightness(10);
+  FastLED.setBrightness(5);
 
   while (!Serial)
     ;
 
-  if (!clock.begin())
-  {
-    Serial.println("Couldn't find Realtime Clock");
-    Serial.flush();
-    abort();
-  }
+  setupRealtimeClock();
+  setupColorCodes();
+  setupDisplayHours();
+  setupTest();
 
-  if (clock.lostPower())
-  {
-    Serial.println("Realtime Clock lost power, setting the time...");
-    clock.adjust(DateTime(F(__DATE__), F(__TIME__)));
-    // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
-  }
-
-  Serial.println("Populating colors...");
-  populateColorCodes();
-
-  Serial.println("Testing display 88...");
-  display.setPart(0, 88, false);
-  show();
-  delay(200);
-  display.clear();
-  display.setSeparator(true);
-  show();
-  delay(200);
-  display.clear();
-  display.setPart(1, 88, false);
-  show();
-  delay(200);
-  display.clear();
-
-  mgr.addListener(new EvtTimeListener(500, true, (EvtAction)showTime));
+  mgr.addListener(new EvtTimeListener(500, true, (EvtAction)update));
 
   Serial.println("Setup complete. Continuing...");
 }
@@ -51,21 +25,28 @@ void loop()
   mgr.loopIteration();
 }
 
-bool showTime()
+bool update()
 {
   now = clock.now();
+
+  if (!displaySchedule.valueFor(now.hour()))
+  {
+    display.clear();
+    render();
+    return false;
+  }
 
   display.setPart(1, now.hour(), false);
   display.setPart(0, now.minute(), true);
   display.setSeparator(true);
-  show();
+  render();
 
   return false;
 }
 
-void show()
+void render()
 {
-  CRGB::HTMLColorCode colorCode = determineColorCode();
+  CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
 
   for (byte i = 0; i < NUM_LEDS; i++)
   {
@@ -82,26 +63,53 @@ void show()
   FastLED.show();
 }
 
-CRGB::HTMLColorCode determineColorCode()
+void setupColorCodes()
 {
-  byte hour = now.hour();
-  return colorCodesForHour[hour];
+  Serial.println("Populating colors...");
+  // daylight
+  colorSchedule.setup(8, 20, CRGB::Blue);
+  // morning
+  colorSchedule.setup(6, 7, CRGB::Orange);
+  // evening
+  colorSchedule.setup(21, 21, CRGB::Purple);
 }
 
-void populateColorCodes()
+void setupDisplayHours()
 {
-  // default night to red
-  for (byte i = 0; i < HOURS_IN_DAY; i++)
+  Serial.println("Setting up display hours...");
+  displaySchedule.setup(6, 21, true);
+}
+
+void setupRealtimeClock()
+{
+  if (!clock.begin())
   {
-    colorCodesForHour[i] = CRGB::Red;
+    Serial.println("Couldn't find Realtime Clock");
+    Serial.flush();
+    abort();
   }
 
-  // daylight
-  for (byte i = 8; i <= 20; i++)
+  if (clock.lostPower())
   {
-    colorCodesForHour[i] = CRGB::Blue;
+    Serial.println("Realtime Clock lost power, setting the time...");
+    clock.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
   }
-  // morning
-  colorCodesForHour[6] = CRGB::Orange;
-  colorCodesForHour[7] = CRGB::Green;
+}
+
+void setupTest()
+{
+  Serial.println("Testing display 88...");
+  display.setPart(0, 88, false);
+  render();
+  delay(200);
+  display.clear();
+  display.setSeparator(true);
+  render();
+  delay(200);
+  display.clear();
+  display.setPart(1, 88, false);
+  render();
+  delay(200);
+  display.clear();
 }
