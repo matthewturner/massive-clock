@@ -31,7 +31,7 @@ bool update()
 
   if (!displaySchedule.valueFor(now.hour()))
   {
-    display.hide();
+    display.clear();
     render();
     return false;
   }

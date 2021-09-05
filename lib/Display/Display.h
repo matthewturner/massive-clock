@@ -20,8 +20,6 @@ public:
     void setLedRange(byte first, byte last, bool show);
     void clear();
     void setAll();
-    void hide();
-    void show();
     void setSeparator(bool show);
     bool updateFrom(Display *other);
 

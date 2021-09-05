@@ -42,11 +42,6 @@ void Display::setLed(byte led, bool show)
   componentFor(led)->setLed(offset(led), show);
 }
 
-void Display::hide()
-{
-  clear();
-}
-
 void Display::clear()
 {
   for (byte i = 0; i < NUM_COMPONENTS; i++)
