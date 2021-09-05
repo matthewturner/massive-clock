@@ -71,7 +71,7 @@ void setupColorCodes()
   // morning
   colorSchedule.setup(6, 7, CRGB::Orange);
   // evening
-  colorSchedule.setup(20, 21, CRGB::Purple);
+  colorSchedule.setup(21, 21, CRGB::Purple);
 }
 
 void setupDisplayHours()
