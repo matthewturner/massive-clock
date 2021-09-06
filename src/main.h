@@ -18,12 +18,14 @@ EvtManager mgr;
 DateTime now;
 Schedule<CRGB::HTMLColorCode> colorSchedule(CRGB::Red);
 Schedule<bool> displaySchedule(false);
+Schedule<byte> brightnessSchedule(5);
 
 void render();
 bool update();
 
-void setupColorCodes();
-void setupDisplayHours();
+void setupColorSchedule();
+void setupDisplaySchedule();
+void setupBrightnessSchedule();
 void setupRealtimeClock();
 void setupTest();
 
