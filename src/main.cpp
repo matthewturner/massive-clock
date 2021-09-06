@@ -11,8 +11,9 @@ void setup()
     ;
 
   setupRealtimeClock();
-  setupColorCodes();
-  setupDisplayHours();
+  setupColorSchedule();
+  setupDisplaySchedule();
+  setupBrightnessSchedule();
   setupTest();
 
   mgr.addListener(new EvtTimeListener(500, true, (EvtAction)update));
@@ -46,8 +47,11 @@ bool update()
 
 void render()
 {
-  CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
+  byte brightness = brightnessSchedule.valueFor(now.hour());
+  FastLED.setBrightness(brightness);
 
+  CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
+  
   for (byte i = 0; i < NUM_LEDS; i++)
   {
     if (display.led(i))
@@ -63,9 +67,9 @@ void render()
   FastLED.show();
 }
 
-void setupColorCodes()
+void setupColorSchedule()
 {
-  Serial.println("Populating colors...");
+  Serial.println("Setup color schedule...");
   // daylight
   colorSchedule.setup(8, 20, CRGB::Blue);
   // morning
@@ -74,10 +78,16 @@ void setupColorCodes()
   colorSchedule.setup(21, 21, CRGB::Purple);
 }
 
-void setupDisplayHours()
+void setupDisplaySchedule()
 {
-  Serial.println("Setting up display hours...");
+  Serial.println("Setting up display schedule...");
   displaySchedule.setup(6, 21, true);
+}
+
+void setupBrightnessSchedule()
+{
+  Serial.println("Setting up brightness schedule...");
+  brightnessSchedule.setup(10, 18, 40);
 }
 
 void setupRealtimeClock()
