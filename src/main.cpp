@@ -47,10 +47,11 @@ bool update()
 
 void render()
 {
-  CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
   byte brightness = brightnessSchedule.valueFor(now.hour());
   FastLED.setBrightness(brightness);
 
+  CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
+  
   for (byte i = 0; i < NUM_LEDS; i++)
   {
     if (display.led(i))
