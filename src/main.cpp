@@ -4,6 +4,8 @@ void setup()
 {
   Serial.begin(9600);
 
+  pinMode(SHOW_PIN, INPUT_PULLUP);
+
   FastLED.addLeds<APA102, DATA_PIN, CLOCK_PIN, BGR>(physicalLeds, NUM_LEDS);
   FastLED.setBrightness(5);
 
@@ -19,9 +21,11 @@ void setup()
   updateListener = new EvtTimeListener(500, true, (EvtAction)update);
   mgr.addListener(updateListener);
 
-  pinMode(SHOW_PIN, INPUT);
-  showTemporarilyListener = new EvtPinListener(SHOW_PIN, (EvtAction)showTemporarily);
+  showTemporarilyListener = new EvtPinListener(SHOW_PIN, 100, LOW, (EvtAction)showTemporarily);
+  mgr.addListener(showTemporarilyListener);
   returnToNormalListener = new EvtTimeListener(SHOW_TEMPORARILY_DURATION, true, (EvtAction)returnToNormal);
+  returnToNormalListener->enabled = false;
+  mgr.addListener(returnToNormalListener);
 
   Serial.println("Setup complete. Continuing...");
 }
@@ -53,8 +57,10 @@ bool update()
 
 bool showTemporarily()
 {
-  mgr.removeListener(updateListener);
-  mgr.addListener(returnToNormalListener);
+  Serial.println("Showing temporarily...");
+  showTemporarilyListener->disable();
+  updateListener->disable();
+  returnToNormalListener->enable();
 
   now = clock.now();
   display.setPart(1, now.hour(), false);
@@ -67,8 +73,10 @@ bool showTemporarily()
 
 bool returnToNormal()
 {
-  mgr.removeListener(returnToNormalListener);
-  mgr.addListener(updateListener);
+  Serial.println("Returning to normal...");
+  returnToNormalListener->disable();
+  updateListener->enable();
+  showTemporarilyListener->enable();
 
   return false;
 }
@@ -144,6 +152,11 @@ void setupRealtimeClock()
     Serial.println("Realtime Clock lost power, setting the time...");
     clock.adjust(DateTime(F(__DATE__), F(__TIME__)));
     // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
+  }
+  if (digitalRead(SHOW_PIN) == LOW)
+  {
+    Serial.println("Manual override: setting the time...");
+    clock.adjust(DateTime(F(__DATE__), F(__TIME__)));
   }
 }
 
