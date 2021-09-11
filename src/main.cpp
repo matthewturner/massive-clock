@@ -4,6 +4,8 @@ void setup()
 {
   Serial.begin(9600);
 
+  pinMode(SHOW_PIN, INPUT_PULLUP);
+
   FastLED.addLeds<APA102, DATA_PIN, CLOCK_PIN, BGR>(physicalLeds, NUM_LEDS);
   FastLED.setBrightness(5);
 
@@ -16,7 +18,14 @@ void setup()
   setupBrightnessSchedule();
   setupTest();
 
-  mgr.addListener(new EvtTimeListener(500, true, (EvtAction)update));
+  updateListener = new EvtTimeListener(500, true, (EvtAction)update);
+  mgr.addListener(updateListener);
+
+  showTemporarilyListener = new EvtPinListener(SHOW_PIN, 100, LOW, (EvtAction)showTemporarily);
+  mgr.addListener(showTemporarilyListener);
+  returnToNormalListener = new EvtTimeListener(SHOW_TEMPORARILY_DURATION, true, (EvtAction)returnToNormal);
+  returnToNormalListener->enabled = false;
+  mgr.addListener(returnToNormalListener);
 
   Serial.println("Setup complete. Continuing...");
 }
@@ -30,17 +39,44 @@ bool update()
 {
   now = clock.now();
 
-  if (!displaySchedule.valueFor(now.hour()))
+  if (displaySchedule.valueFor(now.hour()))
+  {
+    display.setPart(1, now.hour(), false);
+    display.setPart(0, now.minute(), true);
+  }
+  else
   {
     display.clear();
-    render();
-    return false;
   }
 
+  display.setSeparator(displaySchedule.valueFor(now.hour()));
+  render();
+
+  return false;
+}
+
+bool showTemporarily()
+{
+  Serial.println("Showing temporarily...");
+  showTemporarilyListener->disable();
+  updateListener->disable();
+  returnToNormalListener->enable();
+
+  now = clock.now();
   display.setPart(1, now.hour(), false);
   display.setPart(0, now.minute(), true);
   display.setSeparator(true);
   render();
+
+  return false;
+}
+
+bool returnToNormal()
+{
+  Serial.println("Returning to normal...");
+  returnToNormalListener->disable();
+  updateListener->enable();
+  showTemporarilyListener->enable();
 
   return false;
 }
@@ -51,7 +87,7 @@ void render()
   FastLED.setBrightness(brightness);
 
   CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
-  
+
   for (byte i = 0; i < NUM_LEDS; i++)
   {
     if (display.led(i))
@@ -81,7 +117,19 @@ void setupColorSchedule()
 void setupDisplaySchedule()
 {
   Serial.println("Setting up display schedule...");
-  displaySchedule.setup(6, 21, true);
+
+  separatorSchedule.setup(6, 10, true);
+  separatorSchedule.setup(19, 21, true);
+  displaySchedule.setup(19, 21, true);
+
+  if (CURRENT_SCHEDULE == SUMMER_SCHEDULE)
+  {
+    displaySchedule.setup(6, 10, true);
+  }
+  else
+  {
+    displaySchedule.setup(7, 10, true);
+  }
 }
 
 void setupBrightnessSchedule()
@@ -104,6 +152,11 @@ void setupRealtimeClock()
     Serial.println("Realtime Clock lost power, setting the time...");
     clock.adjust(DateTime(F(__DATE__), F(__TIME__)));
     // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
+  }
+  if (digitalRead(SHOW_PIN) == LOW)
+  {
+    Serial.println("Manual override: setting the time...");
+    clock.adjust(DateTime(F(__DATE__), F(__TIME__)));
   }
 }
 
