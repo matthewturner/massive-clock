@@ -16,7 +16,12 @@ void setup()
   setupBrightnessSchedule();
   setupTest();
 
-  mgr.addListener(new EvtTimeListener(500, true, (EvtAction)update));
+  updateListener = new EvtTimeListener(500, true, (EvtAction)update);
+  mgr.addListener(updateListener);
+
+  pinMode(SHOW_PIN, INPUT);
+  showTemporarilyListener = new EvtPinListener(SHOW_PIN, (EvtAction)showTemporarily);
+  returnToNormalListener = new EvtTimeListener(SHOW_TEMPORARILY_DURATION, true, (EvtAction)returnToNormal);
 
   Serial.println("Setup complete. Continuing...");
 }
@@ -30,17 +35,40 @@ bool update()
 {
   now = clock.now();
 
-  if (!displaySchedule.valueFor(now.hour()))
+  if (displaySchedule.valueFor(now.hour()))
+  {
+    display.setPart(1, now.hour(), false);
+    display.setPart(0, now.minute(), true);
+  }
+  else
   {
     display.clear();
-    render();
-    return false;
   }
 
+  display.setSeparator(displaySchedule.valueFor(now.hour()));
+  render();
+
+  return false;
+}
+
+bool showTemporarily()
+{
+  mgr.removeListener(updateListener);
+  mgr.addListener(returnToNormalListener);
+
+  now = clock.now();
   display.setPart(1, now.hour(), false);
   display.setPart(0, now.minute(), true);
   display.setSeparator(true);
   render();
+
+  return false;
+}
+
+bool returnToNormal()
+{
+  mgr.removeListener(returnToNormalListener);
+  mgr.addListener(updateListener);
 
   return false;
 }
@@ -51,7 +79,7 @@ void render()
   FastLED.setBrightness(brightness);
 
   CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
-  
+
   for (byte i = 0; i < NUM_LEDS; i++)
   {
     if (display.led(i))
@@ -81,7 +109,19 @@ void setupColorSchedule()
 void setupDisplaySchedule()
 {
   Serial.println("Setting up display schedule...");
-  displaySchedule.setup(6, 21, true);
+
+  separatorSchedule.setup(6, 10, true);
+  separatorSchedule.setup(19, 21, true);
+  displaySchedule.setup(19, 21, true);
+
+  if (CURRENT_SCHEDULE == SUMMER_SCHEDULE)
+  {
+    displaySchedule.setup(6, 10, true);
+  }
+  else
+  {
+    displaySchedule.setup(7, 10, true);
+  }
 }
 
 void setupBrightnessSchedule()
