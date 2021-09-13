@@ -75,6 +75,12 @@ bool showTemporarily()
   display.setPart(1, now.hour(), false);
   display.setPart(0, now.minute(), true);
   display.setSeparator(true);
+  
+  CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
+  display.setColor(colorCode);
+  byte brightness = brightnessSchedule.valueFor(now.hour());
+  display.setBrightness(brightness);
+  
   render();
 
   return false;
@@ -147,13 +153,14 @@ void setupBrightnessSchedule()
 
 void setupRealtimeClock()
 {
+  display.setBrightness(20);
+  display.setColor(CRGB::Red);
+
   if (!clock.begin())
   {
     Serial.println("Couldn't find Realtime Clock");
     Serial.flush();
     display.setText("cloc");
-    display.setBrightness(20);
-    display.setColor(CRGB::Red);
     render();
     delay(1000);
     abort();
@@ -163,8 +170,6 @@ void setupRealtimeClock()
   {
     Serial.println("Realtime Clock lost power, setting the time...");
     display.setText("lost");
-    display.setBrightness(20);
-    display.setColor(CRGB::Red);
     render();
     delay(1000);
     clock.adjust(DateTime(F(__DATE__), F(__TIME__)));
@@ -174,8 +179,6 @@ void setupRealtimeClock()
   {
     Serial.println("Manual override: setting the time...");
     display.setText("rset");
-    display.setBrightness(20);
-    display.setColor(CRGB::Red);
     render();
     delay(1000);
     clock.adjust(DateTime(F(__DATE__), F(__TIME__)));
