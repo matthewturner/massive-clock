@@ -103,8 +103,8 @@ void test_set_all_parts_max_with_separator(void)
 
 void test_set_text(void)
 {
-    expected.setDigit(3, 'r');
-    expected.setDigit(2, 'e');
+    expected.setDigit(4, 'r');
+    expected.setDigit(3, 'e');
     expected.setDigit(1, 's');
     expected.setDigit(0, 't');
     target.setText("rest");
