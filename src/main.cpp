@@ -41,16 +41,25 @@ bool update()
 
   if (displaySchedule.valueFor(now.hour()))
   {
-    display.setPart(1, now.hour(), false);
-    display.setPart(0, now.minute(), true);
+    pendingDisplay.setPart(1, now.hour(), false);
+    pendingDisplay.setPart(0, now.minute(), true);
   }
   else
   {
-    display.clear();
+    pendingDisplay.clear();
   }
 
-  display.setSeparator(displaySchedule.valueFor(now.hour()));
-  render();
+  pendingDisplay.setSeparator(displaySchedule.valueFor(now.hour()));
+
+  CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
+  pendingDisplay.setColor(colorCode);
+  byte brightness = brightnessSchedule.valueFor(now.hour());
+  pendingDisplay.setBrightness(brightness);
+
+  if (display.updateFrom(&pendingDisplay))
+  {
+    render();
+  }
 
   return false;
 }
@@ -83,14 +92,8 @@ bool returnToNormal()
 
 void render()
 {
-  CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
-  byte brightness = brightnessSchedule.valueFor(now.hour());
-  render(colorCode, brightness);
-}
-
-void render(CRGB::HTMLColorCode colorCode, byte brightness)
-{
-  FastLED.setBrightness(brightness);
+  FastLED.setBrightness(display.getBrightness());
+  CRGB::HTMLColorCode colorCode = (CRGB::HTMLColorCode)display.getColor();
 
   for (byte i = 0; i < NUM_LEDS; i++)
   {
@@ -149,7 +152,9 @@ void setupRealtimeClock()
     Serial.println("Couldn't find Realtime Clock");
     Serial.flush();
     display.setText("cloc");
-    render(CRGB::Red, 20);
+    display.setBrightness(20);
+    display.setColor(CRGB::Red);
+    render();
     delay(1000);
     abort();
   }
@@ -158,7 +163,9 @@ void setupRealtimeClock()
   {
     Serial.println("Realtime Clock lost power, setting the time...");
     display.setText("lost");
-    render(CRGB::Red, 20);
+    display.setBrightness(20);
+    display.setColor(CRGB::Red);
+    render();
     delay(1000);
     clock.adjust(DateTime(F(__DATE__), F(__TIME__)));
     // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
@@ -167,7 +174,9 @@ void setupRealtimeClock()
   {
     Serial.println("Manual override: setting the time...");
     display.setText("rset");
-    render(CRGB::Red, 20);
+    display.setBrightness(20);
+    display.setColor(CRGB::Red);
+    render();
     delay(1000);
     clock.adjust(DateTime(F(__DATE__), F(__TIME__)));
   }
@@ -177,19 +186,22 @@ void setupTest()
 {
   Serial.println("Testing display 88...");
   display.setPart(0, 88, false);
-  render(CRGB::Blue, 20);
+  display.setBrightness(20);
+  display.setColor(CRGB::Blue);
+  render();
   delay(200);
   display.clear();
   display.setSeparator(true);
-  render(CRGB::Blue, 20);
+  render();
   delay(200);
   display.clear();
   display.setPart(1, 88, false);
-  render(CRGB::Blue, 20);
+  render();
   delay(200);
   display.clear();
   display.setText("ello");
-  render(CRGB::Green, 20);
+  display.setColor(CRGB::Green);
+  render();
   delay(500);
   display.clear();
 }

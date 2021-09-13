@@ -18,6 +18,7 @@ const byte SHOW_PIN = 6;
 
 CRGB physicalLeds[NUM_LEDS];
 Display display;
+Display pendingDisplay;
 RTC_DS3231 clock;
 EvtManager mgr;
 DateTime now;

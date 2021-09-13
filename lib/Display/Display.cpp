@@ -98,10 +98,40 @@ bool Display::updateFrom(Display *other)
       updated = true;
     }
   }
+  if (_brightness != other->_brightness)
+  {
+    _brightness = other->_brightness;
+    updated = true;
+  }
+  if (_color != other->_color)
+  {
+    _color = other->_color;
+    updated = true;
+  }
   return updated;
 }
 
 void Display::setSeparator(bool show)
 {
   _separator.setAll(show);
+}
+
+void Display::setBrightness(byte value)
+{
+  _brightness = value;
+}
+
+byte Display::getBrightness()
+{
+  return _brightness;
+}
+
+void Display::setColor(long value)
+{
+  _color = value;
+}
+
+long Display::getColor()
+{
+  return _color;
 }

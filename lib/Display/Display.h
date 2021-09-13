@@ -18,7 +18,11 @@ public:
     void setPart(byte part, byte value, bool leadingZero);
     void setLed(byte led, bool show);
     void setLedRange(byte first, byte last, bool show);
-    void setText(const char* text);
+    void setText(const char *text);
+    void setBrightness(byte value);
+    void setColor(long color);
+    byte getBrightness();
+    long getColor();
     void clear();
     void setAll();
     void setSeparator(bool show);
@@ -31,6 +35,9 @@ private:
     Separator _separator;
     Digit _digit2;
     Digit _digit3;
+
+    byte _brightness = 5;
+    long _color;
 
     Component *componentFor(byte led);
     byte offset(byte led);
