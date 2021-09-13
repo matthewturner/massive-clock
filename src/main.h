@@ -32,6 +32,7 @@ EvtPinListener *showTemporarilyListener;
 EvtTimeListener *returnToNormalListener;
 
 void render();
+void render(CRGB::HTMLColorCode colorCode, byte brightness);
 bool update();
 bool showTemporarily();
 bool returnToNormal();

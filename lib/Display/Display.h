@@ -18,6 +18,7 @@ public:
     void setPart(byte part, byte value, bool leadingZero);
     void setLed(byte led, bool show);
     void setLedRange(byte first, byte last, bool show);
+    void setText(const char* text);
     void clear();
     void setAll();
     void setSeparator(bool show);

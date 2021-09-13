@@ -71,6 +71,14 @@ void Display::setPart(byte part, byte value, bool leadingZero)
   }
 }
 
+void Display::setText(const char *text)
+{
+  setDigit(4, text[0]);
+  setDigit(3, text[1]);
+  setDigit(1, text[2]);
+  setDigit(0, text[3]);
+}
+
 void Display::setLedRange(byte first, byte last, bool show)
 {
   for (byte i = first; i <= last; i++)

@@ -83,10 +83,14 @@ bool returnToNormal()
 
 void render()
 {
-  byte brightness = brightnessSchedule.valueFor(now.hour());
-  FastLED.setBrightness(brightness);
-
   CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
+  byte brightness = brightnessSchedule.valueFor(now.hour());
+  render(colorCode, brightness);
+}
+
+void render(CRGB::HTMLColorCode colorCode, byte brightness)
+{
+  FastLED.setBrightness(brightness);
 
   for (byte i = 0; i < NUM_LEDS; i++)
   {
@@ -144,18 +148,27 @@ void setupRealtimeClock()
   {
     Serial.println("Couldn't find Realtime Clock");
     Serial.flush();
+    display.setText("cloc");
+    render(CRGB::Red, 20);
+    delay(1000);
     abort();
   }
 
   if (clock.lostPower())
   {
     Serial.println("Realtime Clock lost power, setting the time...");
+    display.setText("lost");
+    render(CRGB::Red, 20);
+    delay(1000);
     clock.adjust(DateTime(F(__DATE__), F(__TIME__)));
     // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
   }
   if (digitalRead(SHOW_PIN) == LOW)
   {
     Serial.println("Manual override: setting the time...");
+    display.setText("rset");
+    render(CRGB::Red, 20);
+    delay(1000);
     clock.adjust(DateTime(F(__DATE__), F(__TIME__)));
   }
 }
@@ -164,15 +177,19 @@ void setupTest()
 {
   Serial.println("Testing display 88...");
   display.setPart(0, 88, false);
-  render();
+  render(CRGB::Blue, 20);
   delay(200);
   display.clear();
   display.setSeparator(true);
-  render();
+  render(CRGB::Blue, 20);
   delay(200);
   display.clear();
   display.setPart(1, 88, false);
-  render();
+  render(CRGB::Blue, 20);
   delay(200);
+  display.clear();
+  display.setText("ello");
+  render(CRGB::Green, 20);
+  delay(500);
   display.clear();
 }
