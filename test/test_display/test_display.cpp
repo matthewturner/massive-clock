@@ -101,6 +101,16 @@ void test_set_all_parts_max_with_separator(void)
     assert();
 }
 
+void test_set_text(void)
+{
+    expected.setDigit(4, 'r');
+    expected.setDigit(3, 'e');
+    expected.setDigit(1, 's');
+    expected.setDigit(0, 't');
+    target.setText("rest");
+    assert();
+}
+
 int main(int argc, char **argv)
 {
     UNITY_BEGIN();
@@ -116,6 +126,7 @@ int main(int argc, char **argv)
     RUN_TEST(test_set_part_max);
     RUN_TEST(test_set_all_parts_max);
     RUN_TEST(test_set_all_parts_max_with_separator);
+    RUN_TEST(test_set_text);
     UNITY_END();
 
     return 0;

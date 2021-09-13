@@ -87,6 +87,66 @@ void test_seven(void)
     assert();
 }
 
+void test_s(void)
+{
+    expected.setSegmentRange(1, 5, true);
+    target.set('s');
+    assert();
+}
+
+void test_r(void)
+{
+    expected.setSegmentRange(3, 3, true);
+    expected.setSegmentRange(6, 6, true);
+    target.set('r');
+    assert();
+}
+
+void test_e(void)
+{
+    expected.setSegmentRange(1, 3, true);
+    expected.setSegmentRange(5, 6, true);
+    target.set('e');
+    assert();
+}
+
+void test_t(void)
+{
+    expected.setSegmentRange(2, 3, true);
+    expected.setSegmentRange(5, 6, true);
+    target.set('t');
+    assert();
+}
+
+void test_c(void)
+{
+    expected.setSegmentRange(3, 3, true);
+    expected.setSegmentRange(5, 6, true);
+    target.set('c');
+    assert();
+}
+
+void test_o(void)
+{
+    expected.setSegmentRange(3, 6, true);
+    target.set('o');
+    assert();
+}
+
+void test_l(void)
+{
+    expected.setSegmentRange(2, 2, true);
+    expected.setSegmentRange(5, 6, true);
+    target.set('l');
+    assert();
+}
+
+void test_space(void)
+{
+    target.set(' ');
+    assert();
+}
+
 int main(int argc, char **argv)
 {
     UNITY_BEGIN();
@@ -100,6 +160,14 @@ int main(int argc, char **argv)
     RUN_TEST(test_two);
     RUN_TEST(test_four);
     RUN_TEST(test_seven);
+    RUN_TEST(test_s);
+    RUN_TEST(test_r);
+    RUN_TEST(test_e);
+    RUN_TEST(test_t);
+    RUN_TEST(test_c);
+    RUN_TEST(test_o);
+    RUN_TEST(test_l);
+    RUN_TEST(test_space);
     UNITY_END();
 
     return 0;
