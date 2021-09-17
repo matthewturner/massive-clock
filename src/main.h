@@ -15,7 +15,7 @@ const byte CURRENT_SCHEDULE = SUMMER_SCHEDULE;
 const byte DATA_PIN = 3;
 const byte CLOCK_PIN = 13;
 
-const byte SHOW_PIN = 6;
+const byte SHOW_PIN = 2;
 
 const byte SLEEPING = 0;
 const byte WORK_PENDING = 1;
