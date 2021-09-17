@@ -7,7 +7,6 @@ void setup()
   pinMode(SHOW_PIN, INPUT_PULLUP);
 
   FastLED.addLeds<APA102, DATA_PIN, CLOCK_PIN, BGR>(physicalLeds, NUM_LEDS);
-  FastLED.setBrightness(5);
 
   while (!Serial)
     ;
@@ -21,11 +20,16 @@ void setup()
   updateListener = new EvtTimeListener(500, true, (EvtAction)update);
   mgr.addListener(updateListener);
 
-  showTemporarilyListener = new EvtPinListener(SHOW_PIN, 100, LOW, (EvtAction)showTemporarily);
+  sleepListener = new EvtTimeListener(0, true, (EvtAction)sleep);
+  mgr.addListener(sleepListener);
+
+  showTemporarilyListener = new EvtIntegerListener(&state, WORK_PENDING, (EvtAction)showTemporarily);
   mgr.addListener(showTemporarilyListener);
   returnToNormalListener = new EvtTimeListener(SHOW_TEMPORARILY_DURATION, true, (EvtAction)returnToNormal);
-  returnToNormalListener->enabled = false;
+  returnToNormalListener->disable();
   mgr.addListener(returnToNormalListener);
+
+  attachInterrupt(digitalPinToInterrupt(SHOW_PIN), wakeup, LOW);
 
   Serial.println("Setup complete. Continuing...");
 }
@@ -33,6 +37,27 @@ void setup()
 void loop()
 {
   mgr.loopIteration();
+}
+
+void wakeup()
+{
+  if (state == SLEEPING)
+  {
+    state = WORK_PENDING;
+  }
+}
+
+bool sleep()
+{
+  if (state == WORK_PENDING || state == IN_PROGRESS)
+  {
+    return true;
+  }
+
+  state = SLEEPING;
+  LowPower.idle(SLEEP_8S, ADC_OFF, TIMER2_OFF, TIMER1_OFF, TIMER0_OFF,
+                SPI_OFF, USART0_OFF, TWI_OFF);
+  return true;
 }
 
 bool update()
@@ -61,13 +86,16 @@ bool update()
     render();
   }
 
-  return false;
+  return true;
 }
 
 bool showTemporarily()
 {
+  state = IN_PROGRESS;
+
   Serial.println("Showing temporarily...");
   showTemporarilyListener->disable();
+  sleepListener->disable();
   updateListener->disable();
   returnToNormalListener->enable();
 
@@ -75,15 +103,15 @@ bool showTemporarily()
   display.setPart(1, now.hour(), false);
   display.setPart(0, now.minute(), true);
   display.setSeparator(true);
-  
+
   CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
   display.setColor(colorCode);
   byte brightness = brightnessSchedule.valueFor(now.hour());
   display.setBrightness(brightness);
-  
+
   render();
 
-  return false;
+  return true;
 }
 
 bool returnToNormal()
@@ -92,8 +120,11 @@ bool returnToNormal()
   returnToNormalListener->disable();
   updateListener->enable();
   showTemporarilyListener->enable();
+  sleepListener->enable();
 
-  return false;
+  state = COMPLETE;
+
+  return true;
 }
 
 void render()
