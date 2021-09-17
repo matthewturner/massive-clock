@@ -17,12 +17,11 @@ const byte CLOCK_PIN = 13;
 
 const byte SHOW_PIN = 2;
 
-const byte SLEEPING = 0;
-const byte WORK_PENDING = 1;
+const byte IDLE = 0;
+const byte PENDING = 1;
 const byte IN_PROGRESS = 2;
-const byte COMPLETE = 3;
 
-volatile int state;
+volatile int state = IDLE;
 CRGB physicalLeds[NUM_LEDS];
 Display display;
 Display pendingDisplay;
@@ -38,7 +37,7 @@ EvtTimeListener *updateListener;
 EvtTimeListener *renderListener;
 EvtIntegerListener *showTemporarilyListener;
 EvtTimeListener *returnToNormalListener;
-EvtTimeListener *sleepListener;
+EvtIntegerListener *sleepListener;
 
 void wakeup();
 void render();

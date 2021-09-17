@@ -20,10 +20,10 @@ void setup()
   updateListener = new EvtTimeListener(500, true, (EvtAction)update);
   mgr.addListener(updateListener);
 
-  sleepListener = new EvtTimeListener(0, true, (EvtAction)sleep);
+  sleepListener = new EvtIntegerListener(&state, IDLE, (EvtAction)sleep);
   mgr.addListener(sleepListener);
 
-  showTemporarilyListener = new EvtIntegerListener(&state, WORK_PENDING, (EvtAction)showTemporarily);
+  showTemporarilyListener = new EvtIntegerListener(&state, PENDING, (EvtAction)showTemporarily);
   mgr.addListener(showTemporarilyListener);
   returnToNormalListener = new EvtTimeListener(SHOW_TEMPORARILY_DURATION, true, (EvtAction)returnToNormal);
   returnToNormalListener->disable();
@@ -41,27 +41,26 @@ void loop()
 
 void wakeup()
 {
-  if (state == SLEEPING)
+  Serial.println("Wakeup...");
+  if (state == IDLE)
   {
-    state = WORK_PENDING;
+    Serial.println("Pending...");
+    state = PENDING;
   }
 }
 
 bool sleep()
 {
-  if (state == WORK_PENDING || state == IN_PROGRESS)
-  {
-    return true;
-  }
-
-  state = SLEEPING;
-  LowPower.idle(SLEEP_8S, ADC_OFF, TIMER2_OFF, TIMER1_OFF, TIMER0_OFF,
+  Serial.println("Sleeping...");
+  LowPower.idle(SLEEP_8S, ADC_OFF, TIMER2_OFF, TIMER1_OFF, TIMER0_ON,
                 SPI_OFF, USART0_OFF, TWI_OFF);
   return true;
 }
 
 bool update()
 {
+  Serial.println("Updating...");
+
   now = clock.now();
 
   if (displaySchedule.valueFor(now.hour()))
@@ -95,7 +94,6 @@ bool showTemporarily()
 
   Serial.println("Showing temporarily...");
   showTemporarilyListener->disable();
-  sleepListener->disable();
   updateListener->disable();
   returnToNormalListener->enable();
 
@@ -120,9 +118,8 @@ bool returnToNormal()
   returnToNormalListener->disable();
   updateListener->enable();
   showTemporarilyListener->enable();
-  sleepListener->enable();
 
-  state = COMPLETE;
+  state = IDLE;
 
   return true;
 }
