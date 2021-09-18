@@ -20,10 +20,10 @@ void setup()
   sleepListener = new EvtByteListener(IDLE, ALWAYS, (EvtAction)sleep);
   //mgr.addListener(sleepListener);
 
-  showTemporarilyListener = new EvtByteListener(PENDING, (EvtAction)showTemporarily);
-  mgr.addListener(showTemporarilyListener);
+  showTemporarilyListener = new EvtByteListener(PENDING, ALWAYS, (EvtAction)showTemporarily);
+  // mgr.addListener(showTemporarilyListener);
 
-  updateListener = new EvtTimeListener(5000, true, (EvtAction)update);
+  updateListener = new EvtTimeListener(0, true, (EvtAction)update);
   mgr.addListener(updateListener);
 
   returnToNormalListener = new EvtTimeListener(SHOW_TEMPORARILY_DURATION, true, (EvtAction)returnToNormal);
@@ -38,22 +38,32 @@ void setup()
 void loop()
 {
   mgr.loopIteration();
+
+  switch (state)
+  {
+  case IDLE:
+    sleep();
+    break;
+  case PENDING:
+    showTemporarily();
+    break;
+  }
 }
 
 void wakeup()
 {
   if (state == IDLE)
   {
-    Serial.println("Pending...");
-    //setState(PENDING);
+    setState(PENDING);
   }
 }
 
 bool sleep()
 {
   Serial.println("Sleeping...");
-  //LowPower.idle(SLEEP_8S, ADC_OFF, TIMER2_OFF, TIMER1_OFF, TIMER0_ON,
-  //              SPI_OFF, USART0_OFF, TWI_OFF);
+  Serial.flush();
+  LowPower.idle(SLEEP_8S, ADC_OFF, TIMER2_OFF, TIMER1_OFF, TIMER0_OFF,
+               SPI_OFF, USART0_OFF, TWI_OFF);
   return true;
 }
 
@@ -93,34 +103,49 @@ bool update()
 
 void setState(byte newState)
 {
+  Serial.print("Setting state: ");
+  switch (newState)
+  {
+  case PENDING:
+    Serial.println("PENDING");
+    break;
+  case IN_PROGRESS:
+    Serial.println("IN_PROGRESS");
+    break;
+  case IDLE:
+    Serial.println("IDLE");
+    break;
+  }
+  Serial.flush();
   state = newState;
-  sleepListener->value = newState;
   showTemporarilyListener->value = newState;
+  sleepListener->value = newState;
 }
 
 bool showTemporarily()
 {
   Serial.println("Showing temporarily...");
+  Serial.flush();
   setState(IN_PROGRESS);
 
-  // showTemporarilyListener->disable();
-  // updateListener->disable();
-  // returnToNormalListener->enable();
+  showTemporarilyListener->disable();
+  updateListener->disable();
+  returnToNormalListener->enable();
 
-  // if (CLOCK_IS_ENABLED)
-  // {
-  //   now = clock.now();
-  // }
-  // display.setPart(1, now.hour(), false);
-  // display.setPart(0, now.minute(), true);
-  // display.setSeparator(true);
+  if (CLOCK_IS_ENABLED)
+  {
+    now = clock.now();
+  }
+  display.setPart(1, now.hour(), false);
+  display.setPart(0, now.minute(), true);
+  display.setSeparator(true);
 
-  // CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
-  // display.setColor(colorCode);
-  // byte brightness = brightnessSchedule.valueFor(now.hour());
-  // display.setBrightness(brightness);
+  CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
+  display.setColor(colorCode);
+  byte brightness = brightnessSchedule.valueFor(now.hour());
+  display.setBrightness(brightness);
 
-  // render();
+  render();
 
   return true;
 }
@@ -128,6 +153,7 @@ bool showTemporarily()
 bool returnToNormal()
 {
   Serial.println("Returning to normal...");
+  Serial.flush();
   returnToNormalListener->disable();
   updateListener->enable();
   showTemporarilyListener->enable();
@@ -178,11 +204,11 @@ void setupDisplaySchedule()
 
   if (CURRENT_SCHEDULE == SUMMER_SCHEDULE)
   {
-    displaySchedule.setup(6, 10, true);
+    displaySchedule.setup(6, 9, true);
   }
   else
   {
-    displaySchedule.setup(7, 10, true);
+    displaySchedule.setup(7, 9, true);
   }
 }
 
@@ -197,6 +223,7 @@ void setupRealtimeClock()
   if (!CLOCK_IS_ENABLED)
   {
     Serial.println("Clock is disabled");
+    Serial.flush();
     now = DateTime(2014, 1, 21, 3, 0, 0);
     return;
   }

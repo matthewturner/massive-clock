@@ -13,11 +13,11 @@ public:
     void setupListener();
     bool isEventTriggered();
     char triggerMode = ON_CHANGE;
-    volatile byte value;
+    volatile byte value = 0;
 
 private:
     byte _targetValue;
-    byte _lastValue = 0;
+    volatile byte _lastValue = 0;
 };
 
 #endif

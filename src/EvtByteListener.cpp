@@ -15,12 +15,12 @@ EvtByteListener::EvtByteListener(byte targetValue, EvtAction action)
 
 void EvtByteListener::setupListener()
 {
-    _lastValue = _targetValue + 1;
+    _lastValue = _targetValue + 99;
 }
 
 bool EvtByteListener::isEventTriggered()
 {
-    byte lastValue = _lastValue;
+    volatile byte lastValue = _lastValue;
     _lastValue = value;
 
     if (!EvtListener::isEventTriggered())
