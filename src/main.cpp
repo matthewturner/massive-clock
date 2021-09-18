@@ -17,14 +17,15 @@ void setup()
   setupBrightnessSchedule();
   setupTest();
 
-  updateListener = new EvtTimeListener(500, true, (EvtAction)update);
+  sleepListener = new EvtByteListener(IDLE, ALWAYS, (EvtAction)sleep);
+  //mgr.addListener(sleepListener);
+
+  showTemporarilyListener = new EvtByteListener(PENDING, (EvtAction)showTemporarily);
+  mgr.addListener(showTemporarilyListener);
+
+  updateListener = new EvtTimeListener(5000, true, (EvtAction)update);
   mgr.addListener(updateListener);
 
-  sleepListener = new EvtIntegerListener(&state, IDLE, (EvtAction)sleep);
-  mgr.addListener(sleepListener);
-
-  showTemporarilyListener = new EvtIntegerListener(&state, PENDING, (EvtAction)showTemporarily);
-  mgr.addListener(showTemporarilyListener);
   returnToNormalListener = new EvtTimeListener(SHOW_TEMPORARILY_DURATION, true, (EvtAction)returnToNormal);
   returnToNormalListener->disable();
   mgr.addListener(returnToNormalListener);
@@ -41,19 +42,18 @@ void loop()
 
 void wakeup()
 {
-  Serial.println("Wakeup...");
   if (state == IDLE)
   {
     Serial.println("Pending...");
-    state = PENDING;
+    //setState(PENDING);
   }
 }
 
 bool sleep()
 {
   Serial.println("Sleeping...");
-  LowPower.idle(SLEEP_8S, ADC_OFF, TIMER2_OFF, TIMER1_OFF, TIMER0_ON,
-                SPI_OFF, USART0_OFF, TWI_OFF);
+  //LowPower.idle(SLEEP_8S, ADC_OFF, TIMER2_OFF, TIMER1_OFF, TIMER0_ON,
+  //              SPI_OFF, USART0_OFF, TWI_OFF);
   return true;
 }
 
@@ -61,7 +61,10 @@ bool update()
 {
   Serial.println("Updating...");
 
-  now = clock.now();
+  if (CLOCK_IS_ENABLED)
+  {
+    now = clock.now();
+  }
 
   if (displaySchedule.valueFor(now.hour()))
   {
@@ -88,26 +91,36 @@ bool update()
   return true;
 }
 
+void setState(byte newState)
+{
+  state = newState;
+  sleepListener->value = newState;
+  showTemporarilyListener->value = newState;
+}
+
 bool showTemporarily()
 {
-  state = IN_PROGRESS;
-
   Serial.println("Showing temporarily...");
-  showTemporarilyListener->disable();
-  updateListener->disable();
-  returnToNormalListener->enable();
+  setState(IN_PROGRESS);
 
-  now = clock.now();
-  display.setPart(1, now.hour(), false);
-  display.setPart(0, now.minute(), true);
-  display.setSeparator(true);
+  // showTemporarilyListener->disable();
+  // updateListener->disable();
+  // returnToNormalListener->enable();
 
-  CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
-  display.setColor(colorCode);
-  byte brightness = brightnessSchedule.valueFor(now.hour());
-  display.setBrightness(brightness);
+  // if (CLOCK_IS_ENABLED)
+  // {
+  //   now = clock.now();
+  // }
+  // display.setPart(1, now.hour(), false);
+  // display.setPart(0, now.minute(), true);
+  // display.setSeparator(true);
 
-  render();
+  // CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
+  // display.setColor(colorCode);
+  // byte brightness = brightnessSchedule.valueFor(now.hour());
+  // display.setBrightness(brightness);
+
+  // render();
 
   return true;
 }
@@ -119,7 +132,7 @@ bool returnToNormal()
   updateListener->enable();
   showTemporarilyListener->enable();
 
-  state = IDLE;
+  setState(IDLE);
 
   return true;
 }
@@ -181,6 +194,13 @@ void setupBrightnessSchedule()
 
 void setupRealtimeClock()
 {
+  if (!CLOCK_IS_ENABLED)
+  {
+    Serial.println("Clock is disabled");
+    now = DateTime(2014, 1, 21, 3, 0, 0);
+    return;
+  }
+
   display.setBrightness(20);
   display.setColor(CRGB::Red);
 

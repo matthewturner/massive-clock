@@ -8,6 +8,7 @@
 #include <RTClib.h>
 #include <Eventually.h>
 #include <LowPower.h>
+#include "EvtByteListener.h"
 
 const short SHOW_TEMPORARILY_DURATION = 3000;
 const byte CURRENT_SCHEDULE = SUMMER_SCHEDULE;
@@ -16,12 +17,13 @@ const byte DATA_PIN = 3;
 const byte CLOCK_PIN = 13;
 
 const byte SHOW_PIN = 2;
+const bool CLOCK_IS_ENABLED = false;
 
 const byte IDLE = 0;
 const byte PENDING = 1;
 const byte IN_PROGRESS = 2;
 
-volatile int state = IDLE;
+volatile byte state = IDLE;
 CRGB physicalLeds[NUM_LEDS];
 Display display;
 Display pendingDisplay;
@@ -35,10 +37,11 @@ Schedule<byte> brightnessSchedule(5);
 
 EvtTimeListener *updateListener;
 EvtTimeListener *renderListener;
-EvtIntegerListener *showTemporarilyListener;
+EvtByteListener *showTemporarilyListener;
 EvtTimeListener *returnToNormalListener;
-EvtIntegerListener *sleepListener;
+EvtByteListener *sleepListener;
 
+void setState(byte state);
 void wakeup();
 void render();
 void render(CRGB::HTMLColorCode colorCode, byte brightness);
