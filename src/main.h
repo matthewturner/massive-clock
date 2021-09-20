@@ -8,7 +8,6 @@
 #include <RTClib.h>
 #include <Eventually.h>
 #include <LowPower.h>
-#include "EvtByteListener.h"
 
 const short SHOW_TEMPORARILY_DURATION = 3000;
 const byte CURRENT_SCHEDULE = SUMMER_SCHEDULE;
