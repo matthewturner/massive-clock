@@ -17,7 +17,7 @@ const byte DATA_PIN = 3;
 const byte CLOCK_PIN = 13;
 
 const byte SHOW_PIN = 2;
-const bool CLOCK_IS_ENABLED = false;
+const bool CLOCK_IS_ENABLED = true;
 
 const byte IDLE = 0;
 const byte PENDING = 1;

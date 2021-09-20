@@ -60,7 +60,6 @@ bool sleep()
 bool update()
 {
   Serial.println("Updating...");
-  Serial.flush();
 
   if (CLOCK_IS_ENABLED)
   {
@@ -117,7 +116,6 @@ bool showTemporarily()
   Serial.flush();
   setState(IN_PROGRESS);
 
-  showTemporarilyListener->disable();
   updateListener->disable();
   returnToNormalListener->enable();
 
@@ -142,10 +140,8 @@ bool showTemporarily()
 bool returnToNormal()
 {
   Serial.println("Returning to normal...");
-  Serial.flush();
   returnToNormalListener->disable();
   updateListener->enable();
-  showTemporarilyListener->enable();
 
   setState(IDLE);
 
