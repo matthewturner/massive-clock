@@ -24,6 +24,7 @@ const byte PENDING = 1;
 const byte IN_PROGRESS = 2;
 
 volatile byte state = IDLE;
+volatile byte *pState = &state;
 CRGB physicalLeds[NUM_LEDS];
 Display display;
 Display pendingDisplay;

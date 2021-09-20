@@ -17,14 +17,14 @@ void setup()
   setupBrightnessSchedule();
   setupTest();
 
-  sleepListener = new EvtByteListener(IDLE, ALWAYS, (EvtAction)sleep);
-  //mgr.addListener(sleepListener);
-
-  showTemporarilyListener = new EvtByteListener(PENDING, ALWAYS, (EvtAction)showTemporarily);
-  // mgr.addListener(showTemporarilyListener);
-
   updateListener = new EvtTimeListener(0, true, (EvtAction)update);
   mgr.addListener(updateListener);
+
+  sleepListener = new EvtByteListener(pState, IDLE, (EvtAction)sleep);
+  mgr.addListener(sleepListener);
+
+  showTemporarilyListener = new EvtByteListener(pState, PENDING, (EvtAction)showTemporarily);
+  mgr.addListener(showTemporarilyListener);
 
   returnToNormalListener = new EvtTimeListener(SHOW_TEMPORARILY_DURATION, true, (EvtAction)returnToNormal);
   returnToNormalListener->disable();
@@ -38,16 +38,6 @@ void setup()
 void loop()
 {
   mgr.loopIteration();
-
-  switch (state)
-  {
-  case IDLE:
-    sleep();
-    break;
-  case PENDING:
-    showTemporarily();
-    break;
-  }
 }
 
 void wakeup()
@@ -63,13 +53,14 @@ bool sleep()
   Serial.println("Sleeping...");
   Serial.flush();
   LowPower.idle(SLEEP_8S, ADC_OFF, TIMER2_OFF, TIMER1_OFF, TIMER0_OFF,
-               SPI_OFF, USART0_OFF, TWI_OFF);
+                SPI_OFF, USART0_OFF, TWI_OFF);
   return true;
 }
 
 bool update()
 {
   Serial.println("Updating...");
+  Serial.flush();
 
   if (CLOCK_IS_ENABLED)
   {
@@ -118,8 +109,6 @@ void setState(byte newState)
   }
   Serial.flush();
   state = newState;
-  showTemporarilyListener->value = newState;
-  sleepListener->value = newState;
 }
 
 bool showTemporarily()
