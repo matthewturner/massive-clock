@@ -106,14 +106,12 @@ void setState(byte newState)
     Serial.println("IDLE");
     break;
   }
-  Serial.flush();
   state = newState;
 }
 
 bool showTemporarily()
 {
   Serial.println("Showing temporarily...");
-  Serial.flush();
   setState(IN_PROGRESS);
 
   updateListener->disable();
@@ -208,7 +206,6 @@ void setupRealtimeClock()
   if (!CLOCK_IS_ENABLED)
   {
     Serial.println("Clock is disabled");
-    Serial.flush();
     now = DateTime(2014, 1, 21, 3, 0, 0);
     return;
   }
