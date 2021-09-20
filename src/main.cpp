@@ -7,7 +7,6 @@ void setup()
   pinMode(SHOW_PIN, INPUT_PULLUP);
 
   FastLED.addLeds<APA102, DATA_PIN, CLOCK_PIN, BGR>(physicalLeds, NUM_LEDS);
-  FastLED.setBrightness(5);
 
   while (!Serial)
     ;
@@ -18,14 +17,20 @@ void setup()
   setupBrightnessSchedule();
   setupTest();
 
-  updateListener = new EvtTimeListener(500, true, (EvtAction)update);
+  updateListener = new EvtTimeListener(0, true, (EvtAction)update);
   mgr.addListener(updateListener);
 
-  showTemporarilyListener = new EvtPinListener(SHOW_PIN, 100, LOW, (EvtAction)showTemporarily);
+  sleepListener = new EvtByteListener(pState, IDLE, (EvtAction)sleep);
+  mgr.addListener(sleepListener);
+
+  showTemporarilyListener = new EvtByteListener(pState, PENDING, (EvtAction)showTemporarily);
   mgr.addListener(showTemporarilyListener);
+
   returnToNormalListener = new EvtTimeListener(SHOW_TEMPORARILY_DURATION, true, (EvtAction)returnToNormal);
-  returnToNormalListener->enabled = false;
+  returnToNormalListener->disable();
   mgr.addListener(returnToNormalListener);
+
+  attachInterrupt(digitalPinToInterrupt(SHOW_PIN), wakeup, LOW);
 
   Serial.println("Setup complete. Continuing...");
 }
@@ -35,40 +40,99 @@ void loop()
   mgr.loopIteration();
 }
 
+void wakeup()
+{
+  if (state == IDLE)
+  {
+    setState(PENDING);
+  }
+}
+
+bool sleep()
+{
+  Serial.println("Sleeping...");
+  Serial.flush();
+  LowPower.idle(SLEEP_8S, ADC_OFF, TIMER2_OFF, TIMER1_OFF, TIMER0_OFF,
+                SPI_OFF, USART0_OFF, TWI_OFF);
+  return true;
+}
+
 bool update()
 {
-  now = clock.now();
+  Serial.println("Updating...");
+
+  if (CLOCK_IS_ENABLED)
+  {
+    now = clock.now();
+  }
 
   if (displaySchedule.valueFor(now.hour()))
   {
-    display.setPart(1, now.hour(), false);
-    display.setPart(0, now.minute(), true);
+    pendingDisplay.setPart(1, now.hour(), false);
+    pendingDisplay.setPart(0, now.minute(), true);
   }
   else
   {
-    display.clear();
+    pendingDisplay.clear();
   }
 
-  display.setSeparator(displaySchedule.valueFor(now.hour()));
-  render();
+  pendingDisplay.setSeparator(displaySchedule.valueFor(now.hour()));
 
-  return false;
+  CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
+  pendingDisplay.setColor(colorCode);
+  byte brightness = brightnessSchedule.valueFor(now.hour());
+  pendingDisplay.setBrightness(brightness);
+
+  if (display.updateFrom(&pendingDisplay))
+  {
+    render();
+  }
+
+  return true;
+}
+
+void setState(byte newState)
+{
+  Serial.print("Setting state: ");
+  switch (newState)
+  {
+  case PENDING:
+    Serial.println("PENDING");
+    break;
+  case IN_PROGRESS:
+    Serial.println("IN_PROGRESS");
+    break;
+  case IDLE:
+    Serial.println("IDLE");
+    break;
+  }
+  state = newState;
 }
 
 bool showTemporarily()
 {
   Serial.println("Showing temporarily...");
-  showTemporarilyListener->disable();
+  setState(IN_PROGRESS);
+
   updateListener->disable();
   returnToNormalListener->enable();
 
-  now = clock.now();
+  if (CLOCK_IS_ENABLED)
+  {
+    now = clock.now();
+  }
   display.setPart(1, now.hour(), false);
   display.setPart(0, now.minute(), true);
   display.setSeparator(true);
+
+  CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
+  display.setColor(colorCode);
+  byte brightness = brightnessSchedule.valueFor(now.hour());
+  display.setBrightness(brightness);
+
   render();
 
-  return false;
+  return true;
 }
 
 bool returnToNormal()
@@ -76,21 +140,16 @@ bool returnToNormal()
   Serial.println("Returning to normal...");
   returnToNormalListener->disable();
   updateListener->enable();
-  showTemporarilyListener->enable();
 
-  return false;
+  setState(IDLE);
+
+  return true;
 }
 
 void render()
 {
-  CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
-  byte brightness = brightnessSchedule.valueFor(now.hour());
-  render(colorCode, brightness);
-}
-
-void render(CRGB::HTMLColorCode colorCode, byte brightness)
-{
-  FastLED.setBrightness(brightness);
+  FastLED.setBrightness(display.getBrightness());
+  CRGB::HTMLColorCode colorCode = (CRGB::HTMLColorCode)display.getColor();
 
   for (byte i = 0; i < NUM_LEDS; i++)
   {
@@ -128,11 +187,11 @@ void setupDisplaySchedule()
 
   if (CURRENT_SCHEDULE == SUMMER_SCHEDULE)
   {
-    displaySchedule.setup(6, 10, true);
+    displaySchedule.setup(6, 9, true);
   }
   else
   {
-    displaySchedule.setup(7, 10, true);
+    displaySchedule.setup(7, 9, true);
   }
 }
 
@@ -144,12 +203,22 @@ void setupBrightnessSchedule()
 
 void setupRealtimeClock()
 {
+  if (!CLOCK_IS_ENABLED)
+  {
+    Serial.println("Clock is disabled");
+    now = DateTime(2014, 1, 21, 3, 0, 0);
+    return;
+  }
+
+  display.setBrightness(20);
+  display.setColor(CRGB::Red);
+
   if (!clock.begin())
   {
     Serial.println("Couldn't find Realtime Clock");
     Serial.flush();
     display.setText("cloc");
-    render(CRGB::Red, 20);
+    render();
     delay(1000);
     abort();
   }
@@ -158,7 +227,7 @@ void setupRealtimeClock()
   {
     Serial.println("Realtime Clock lost power, setting the time...");
     display.setText("lost");
-    render(CRGB::Red, 20);
+    render();
     delay(1000);
     clock.adjust(DateTime(F(__DATE__), F(__TIME__)));
     // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
@@ -167,7 +236,7 @@ void setupRealtimeClock()
   {
     Serial.println("Manual override: setting the time...");
     display.setText("rset");
-    render(CRGB::Red, 20);
+    render();
     delay(1000);
     clock.adjust(DateTime(F(__DATE__), F(__TIME__)));
   }
@@ -177,19 +246,22 @@ void setupTest()
 {
   Serial.println("Testing display 88...");
   display.setPart(0, 88, false);
-  render(CRGB::Blue, 20);
+  display.setBrightness(20);
+  display.setColor(CRGB::Blue);
+  render();
   delay(200);
   display.clear();
   display.setSeparator(true);
-  render(CRGB::Blue, 20);
+  render();
   delay(200);
   display.clear();
   display.setPart(1, 88, false);
-  render(CRGB::Blue, 20);
+  render();
   delay(200);
   display.clear();
   display.setText("ello");
-  render(CRGB::Green, 20);
+  display.setColor(CRGB::Green);
+  render();
   delay(500);
   display.clear();
 }
