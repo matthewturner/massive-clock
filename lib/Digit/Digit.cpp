@@ -171,40 +171,22 @@ void Digit::setDots(byte count)
   switch (count)
   {
   case 1:
-    fillSegment(SEG_BOTTOM, 1);
-    break;
   case 2:
-    fillSegment(SEG_BOTTOM, 2);
-    break;
   case 3:
-    fillSegment(SEG_BOTTOM, 3);
+    fillSegment(SEG_BOTTOM, count);
     break;
   case 4:
-    fillSegment(SEG_BOTTOM, 3);
-    fillSegment(SEG_MIDDLE, 1);
-    break;
   case 5:
-    fillSegment(SEG_BOTTOM, 3);
-    fillSegment(SEG_MIDDLE, 2);
-    break;
   case 6:
-    fillSegment(SEG_BOTTOM, 3);
-    fillSegment(SEG_MIDDLE, 3);
+    fillSegment(SEG_BOTTOM, LEDS_PER_SEGMENT);
+    fillSegment(SEG_MIDDLE, count - LEDS_PER_SEGMENT);
     break;
   case 7:
-    fillSegment(SEG_BOTTOM, 3);
-    fillSegment(SEG_MIDDLE, 3);
-    fillSegment(SEG_TOP, 1);
-    break;
   case 8:
-    fillSegment(SEG_BOTTOM, 3);
-    fillSegment(SEG_MIDDLE, 3);
-    fillSegment(SEG_TOP, 2);
-    break;
   case 9:
-    fillSegment(SEG_BOTTOM, 3);
-    fillSegment(SEG_MIDDLE, 3);
-    fillSegment(SEG_TOP, 3);
+    fillSegment(SEG_BOTTOM, LEDS_PER_SEGMENT);
+    fillSegment(SEG_MIDDLE, LEDS_PER_SEGMENT);
+    fillSegment(SEG_TOP, count - (LEDS_PER_SEGMENT * 2));
     break;
   }
 }
