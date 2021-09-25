@@ -55,7 +55,12 @@ void Display::setDigit(byte digit, byte value)
   _components[digit]->set(value);
 }
 
-void Display::setPart(byte part, byte value, bool leadingZero)
+void Display::setDots(byte digit, byte value)
+{
+  _components[digit]->setDots(value);
+}
+
+void Display::setPart(byte part, byte value, Flags flags)
 {
   byte offset = part * 2;
   if (offset > 0)
@@ -64,10 +69,26 @@ void Display::setPart(byte part, byte value, bool leadingZero)
   }
   byte tens = (value - (value % 10)) / 10;
   byte unit = value % 10;
-  setDigit(0 + offset, unit);
+  bool minimalMode = ((flags & Flags::MINIMAL) == Flags::MINIMAL);
+  if (minimalMode)
+  {
+    setDots(0 + offset, unit);
+  }
+  else
+  {
+    setDigit(0 + offset, unit);
+  }
+  bool leadingZero = ((flags & Flags::LEADING_ZERO) == Flags::LEADING_ZERO);
   if (leadingZero || tens > 0)
   {
-    setDigit(1 + offset, tens);
+    if (minimalMode)
+    {
+      setDots(1 + offset, tens);
+    }
+    else
+    {
+      setDigit(1 + offset, tens);
+    }
   }
 }
 

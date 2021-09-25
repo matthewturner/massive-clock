@@ -49,3 +49,17 @@ void Separator::setRange(byte first, byte last, bool show)
     setLed(i, show);
   }
 }
+
+void Separator::setDots(byte count)
+{
+  switch (count)
+  {
+  case 1:
+    _leds[0] = true;
+    break;
+  case 2:
+    _leds[0] = true;
+    _leds[1] = true;
+    break;
+  }
+}

@@ -122,6 +122,29 @@ void Digit::setSegment(byte segment, bool show)
   }
 }
 
+void Digit::fillSegment(byte segment, byte max)
+{
+  byte startIndex = segment * LEDS_PER_SEGMENT;
+  switch (segment)
+  {
+  case SEG_TOP_RIGHT:
+  case SEG_TOP:
+  case SEG_BOTTOM:
+  case SEG_BOTTOM_LEFT:
+    for (byte i = 0; i < max; i++)
+    {
+      _leds[i + startIndex] = true;
+    }
+    break;
+  default:
+    for (byte i = LEDS_PER_SEGMENT - max; i < LEDS_PER_SEGMENT; i++)
+    {
+      _leds[i + startIndex] = true;
+    }
+    break;
+  }
+}
+
 void Digit::setSegmentRange(byte first, byte last, bool show)
 {
   for (byte i = first; i <= last; i++)
@@ -141,4 +164,30 @@ void Digit::setLedRange(byte first, byte last, bool show)
 void Digit::setLed(byte led, bool show)
 {
   _leds[led] = show;
+}
+
+void Digit::setDots(byte count)
+{
+  byte overflow = count % LEDS_PER_SEGMENT;
+  byte layers = count / LEDS_PER_SEGMENT;
+  switch (layers)
+  {
+  case 0:
+    fillSegment(SEG_BOTTOM, overflow);
+    break;
+  case 1:
+    fillSegment(SEG_BOTTOM, LEDS_PER_SEGMENT);
+    fillSegment(SEG_MIDDLE, overflow);
+    break;
+  case 2:
+    fillSegment(SEG_BOTTOM, LEDS_PER_SEGMENT);
+    fillSegment(SEG_MIDDLE, LEDS_PER_SEGMENT);
+    fillSegment(SEG_TOP, overflow);
+    break;
+  case 3:
+    fillSegment(SEG_BOTTOM, LEDS_PER_SEGMENT);
+    fillSegment(SEG_MIDDLE, LEDS_PER_SEGMENT);
+    fillSegment(SEG_TOP, LEDS_PER_SEGMENT);
+    break;
+  }
 }

@@ -22,10 +22,12 @@ public:
     bool led(byte led) override;
     void set(byte value);
     void setSegment(byte segment, bool show);
+    void fillSegment(byte segment, byte max);
     void setAll(bool show);
     void setSegmentRange(byte first, byte last, bool show);
     void setLedRange(byte first, byte last, bool show);
     void setLed(byte led, bool show) override;
+    void setDots(byte count) override;
     void clear() override;
     byte ledCount() override;
 
