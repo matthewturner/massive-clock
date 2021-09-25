@@ -213,7 +213,7 @@ void setupBrightnessSchedule()
 void setupMinimalModeSchedule()
 {
   Serial.println("Setting up minimal mode schedule...");
-  brightnessSchedule.setup(6, 7, true);
+  minimalSchedule.setup(6, 6, true);
 }
 
 void setupRealtimeClock()
