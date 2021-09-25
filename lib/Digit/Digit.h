@@ -26,6 +26,7 @@ public:
     void setSegmentRange(byte first, byte last, bool show);
     void setLedRange(byte first, byte last, bool show);
     void setLed(byte led, bool show) override;
+    void setDots(byte count) override;
     void clear() override;
     byte ledCount() override;
 

@@ -25,11 +25,27 @@ void test_segment_full(void)
     assert();
 }
 
+void test_one_dot(void)
+{
+    expected.setRange(0, 0, true);
+    target.setDots(1);
+    assert();
+}
+
+void test_two_dots(void)
+{
+    expected.setRange(0, 1, true);
+    target.setDots(2);
+    assert();
+}
+
 int main(int argc, char **argv)
 {
     UNITY_BEGIN();
     RUN_TEST(test_segment_half);
     RUN_TEST(test_segment_full);
+    RUN_TEST(test_one_dot);
+    RUN_TEST(test_two_dots);
     UNITY_END();
 
     return 0;

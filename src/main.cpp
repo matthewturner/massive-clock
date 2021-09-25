@@ -15,6 +15,7 @@ void setup()
   setupColorSchedule();
   setupDisplaySchedule();
   setupBrightnessSchedule();
+  setupMicroModeSchedule();
   setupTest();
 
   updateListener = new EvtTimeListener(0, true, (EvtAction)update);
@@ -68,15 +69,23 @@ bool update()
 
   if (displaySchedule.valueFor(now.hour()))
   {
-    pendingDisplay.setPart(1, now.hour(), false);
-    pendingDisplay.setPart(0, now.minute(), true);
+    if (microSchedule.valueFor(now.hour()))
+    {
+      pendingDisplay.setPart(1, now.hour(), Flags::MICRO);
+      pendingDisplay.setPart(0, now.minute(), (Flags)(Flags::LEADING_ZERO | Flags::MICRO));
+      pendingDisplay.setSeparator(false);
+    }
+    else
+    {
+      pendingDisplay.setPart(1, now.hour(), Flags::NONE);
+      pendingDisplay.setPart(0, now.minute(), Flags::LEADING_ZERO);
+      pendingDisplay.setSeparator(true);
+    }
   }
   else
   {
     pendingDisplay.clear();
   }
-
-  pendingDisplay.setSeparator(displaySchedule.valueFor(now.hour()));
 
   CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
   pendingDisplay.setColor(colorCode);
@@ -121,8 +130,8 @@ bool showTemporarily()
   {
     now = clock.now();
   }
-  display.setPart(1, now.hour(), false);
-  display.setPart(0, now.minute(), true);
+  display.setPart(1, now.hour(), Flags::NONE);
+  display.setPart(0, now.minute(), Flags::LEADING_ZERO);
   display.setSeparator(true);
 
   CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
@@ -201,6 +210,12 @@ void setupBrightnessSchedule()
   brightnessSchedule.setup(10, 18, 40);
 }
 
+void setupMicroModeSchedule()
+{
+  Serial.println("Setting up micro mode schedule...");
+  brightnessSchedule.setup(6, 7, true);
+}
+
 void setupRealtimeClock()
 {
   if (!CLOCK_IS_ENABLED)
@@ -245,7 +260,7 @@ void setupRealtimeClock()
 void setupTest()
 {
   Serial.println("Testing display 88...");
-  display.setPart(0, 88, false);
+  display.setPart(0, 88, Flags::NONE);
   display.setBrightness(20);
   display.setColor(CRGB::Blue);
   render();
@@ -255,7 +270,7 @@ void setupTest()
   render();
   delay(200);
   display.clear();
-  display.setPart(1, 88, false);
+  display.setPart(1, 88, Flags::NONE);
   render();
   delay(200);
   display.clear();

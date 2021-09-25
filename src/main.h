@@ -34,6 +34,7 @@ Schedule<CRGB::HTMLColorCode> colorSchedule(CRGB::Red);
 Schedule<bool> displaySchedule(false);
 Schedule<bool> separatorSchedule(false);
 Schedule<byte> brightnessSchedule(5);
+Schedule<bool> microSchedule(false);
 
 EvtTimeListener *updateListener;
 EvtTimeListener *renderListener;
@@ -54,6 +55,7 @@ void setupColorSchedule();
 void setupDisplaySchedule();
 void setupBrightnessSchedule();
 void setupRealtimeClock();
+void setupMicroModeSchedule();
 void setupTest();
 
 #endif

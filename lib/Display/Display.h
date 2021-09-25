@@ -9,13 +9,21 @@
 const byte NUM_LEDS = 86;
 const byte NUM_COMPONENTS = 5;
 
+typedef enum
+{
+    NONE = 0,
+    LEADING_ZERO = 1,
+    MICRO = 2
+} Flags;
+
 class Display
 {
 public:
     Display();
     bool led(byte led);
     void setDigit(byte digit, byte value);
-    void setPart(byte part, byte value, bool leadingZero);
+    void setPart(byte part, byte value, Flags flags);
+    void setDots(byte digit, byte value);
     void setLed(byte led, bool show);
     void setLedRange(byte first, byte last, bool show);
     void setText(const char *text);

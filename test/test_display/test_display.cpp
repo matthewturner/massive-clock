@@ -45,7 +45,7 @@ void test_second_digit_three(void)
 void test_part_no_leading_zero(void)
 {
     expected.setLedRange(0, 20, true);
-    target.setPart(0, 8, false);
+    target.setPart(0, 8, Flags::NONE);
     assert();
 }
 
@@ -53,7 +53,7 @@ void test_part_with_leading_zero(void)
 {
     expected.setLedRange(0, 41, true);
     expected.setLedRange(30, 32, false);
-    target.setPart(0, 8, true);
+    target.setPart(0, 8, Flags::LEADING_ZERO);
     assert();
 }
 
@@ -93,7 +93,7 @@ void test_update_from_updates_brightness(void)
 void test_set_part_max(void)
 {
     expected.setLedRange(0, 41, true);
-    target.setPart(0, 88, false);
+    target.setPart(0, 88, Flags::NONE);
     assert();
 }
 
@@ -101,16 +101,16 @@ void test_set_all_parts_max(void)
 {
     expected.setLedRange(0, 41, true);
     expected.setLedRange(44, 85, true);
-    target.setPart(0, 88, false);
-    target.setPart(1, 88, false);
+    target.setPart(0, 88, Flags::NONE);
+    target.setPart(1, 88, Flags::NONE);
     assert();
 }
 
 void test_set_all_parts_max_with_separator(void)
 {
     expected.setLedRange(0, 85, true);
-    target.setPart(0, 88, false);
-    target.setPart(1, 88, false);
+    target.setPart(0, 88, Flags::NONE);
+    target.setPart(1, 88, Flags::NONE);
     target.setSeparator(true);
     assert();
 }
@@ -123,6 +123,27 @@ void test_set_text(void)
     expected.setDigit(0, 't');
     target.setText("rest");
     assert();
+}
+
+void test_set_three_in_micro_mode(void)
+{
+    expected.setLedRange(15, 17, true);
+    target.setPart(0, 3, Flags::MICRO);
+    assert();
+}
+
+void test_flags_multiple(void)
+{
+    Flags f = (Flags)(Flags::MICRO | Flags::LEADING_ZERO);
+    TEST_ASSERT_TRUE((f & Flags::MICRO) == Flags::MICRO);
+    TEST_ASSERT_TRUE((f & Flags::LEADING_ZERO) == Flags::LEADING_ZERO);
+}
+
+void test_flags_single(void)
+{
+    Flags f = (Flags)(Flags::MICRO);
+    TEST_ASSERT_TRUE((f & Flags::MICRO) == Flags::MICRO);
+    TEST_ASSERT_FALSE((f & Flags::LEADING_ZERO) == Flags::LEADING_ZERO);
 }
 
 int main(int argc, char **argv)
@@ -143,6 +164,9 @@ int main(int argc, char **argv)
     RUN_TEST(test_set_all_parts_max);
     RUN_TEST(test_set_all_parts_max_with_separator);
     RUN_TEST(test_set_text);
+    RUN_TEST(test_set_three_in_micro_mode);
+    RUN_TEST(test_flags_multiple);
+    RUN_TEST(test_flags_single);
     UNITY_END();
 
     return 0;

@@ -142,3 +142,82 @@ void Digit::setLed(byte led, bool show)
 {
   _leds[led] = show;
 }
+
+void Digit::setDots(byte count)
+{
+  switch (count)
+  {
+  case 1:
+    _leds[15] = true;
+    break;
+  case 2:
+    _leds[15] = true;
+    _leds[16] = true;
+    break;
+  case 3:
+    _leds[15] = true;
+    _leds[16] = true;
+    _leds[17] = true;
+    break;
+  case 4:
+    _leds[15] = true;
+    _leds[16] = true;
+    _leds[17] = true;
+
+    _leds[11] = true;
+    break;
+  case 5:
+    _leds[15] = true;
+    _leds[16] = true;
+    _leds[17] = true;
+
+    _leds[11] = true;
+    _leds[10] = true;
+    break;
+  case 6:
+    _leds[15] = true;
+    _leds[16] = true;
+    _leds[17] = true;
+
+    _leds[11] = true;
+    _leds[10] = true;
+    _leds[9] = true;
+    break;
+  case 7:
+    _leds[15] = true;
+    _leds[16] = true;
+    _leds[17] = true;
+
+    _leds[11] = true;
+    _leds[10] = true;
+    _leds[9] = true;
+
+    _leds[3] = true;
+    break;
+  case 8:
+    _leds[15] = true;
+    _leds[16] = true;
+    _leds[17] = true;
+
+    _leds[11] = true;
+    _leds[10] = true;
+    _leds[9] = true;
+
+    _leds[3] = true;
+    _leds[4] = true;
+    break;
+  case 9:
+    _leds[15] = true;
+    _leds[16] = true;
+    _leds[17] = true;
+
+    _leds[11] = true;
+    _leds[10] = true;
+    _leds[9] = true;
+
+    _leds[3] = true;
+    _leds[4] = true;
+    _leds[5] = true;
+    break;
+  }
+}
