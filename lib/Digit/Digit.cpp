@@ -168,25 +168,26 @@ void Digit::setLed(byte led, bool show)
 
 void Digit::setDots(byte count)
 {
-  switch (count)
+  byte overflow = count % LEDS_PER_SEGMENT;
+  byte layers = count / LEDS_PER_SEGMENT;
+  switch (layers)
   {
+  case 0:
+    fillSegment(SEG_BOTTOM, overflow);
+    break;
   case 1:
-  case 2:
-  case 3:
-    fillSegment(SEG_BOTTOM, count);
-    break;
-  case 4:
-  case 5:
-  case 6:
     fillSegment(SEG_BOTTOM, LEDS_PER_SEGMENT);
-    fillSegment(SEG_MIDDLE, count - LEDS_PER_SEGMENT);
+    fillSegment(SEG_MIDDLE, overflow);
     break;
-  case 7:
-  case 8:
-  case 9:
+  case 2:
     fillSegment(SEG_BOTTOM, LEDS_PER_SEGMENT);
     fillSegment(SEG_MIDDLE, LEDS_PER_SEGMENT);
-    fillSegment(SEG_TOP, count - (LEDS_PER_SEGMENT * 2));
+    fillSegment(SEG_TOP, overflow);
+    break;
+  case 3:
+    fillSegment(SEG_BOTTOM, LEDS_PER_SEGMENT);
+    fillSegment(SEG_MIDDLE, LEDS_PER_SEGMENT);
+    fillSegment(SEG_TOP, LEDS_PER_SEGMENT);
     break;
   }
 }
