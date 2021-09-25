@@ -13,7 +13,7 @@ typedef enum
 {
     NONE = 0,
     LEADING_ZERO = 1,
-    MICRO = 2
+    MINIMAL = 2
 } Flags;
 
 class Display

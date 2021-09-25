@@ -15,7 +15,7 @@ void setup()
   setupColorSchedule();
   setupDisplaySchedule();
   setupBrightnessSchedule();
-  setupMicroModeSchedule();
+  setupMinimalModeSchedule();
   setupTest();
 
   updateListener = new EvtTimeListener(0, true, (EvtAction)update);
@@ -69,10 +69,10 @@ bool update()
 
   if (displaySchedule.valueFor(now.hour()))
   {
-    if (microSchedule.valueFor(now.hour()))
+    if (minimalSchedule.valueFor(now.hour()))
     {
-      pendingDisplay.setPart(1, now.hour(), Flags::MICRO);
-      pendingDisplay.setPart(0, now.minute(), (Flags)(Flags::LEADING_ZERO | Flags::MICRO));
+      pendingDisplay.setPart(1, now.hour(), Flags::MINIMAL);
+      pendingDisplay.setPart(0, now.minute(), (Flags)(Flags::LEADING_ZERO | Flags::MINIMAL));
       pendingDisplay.setSeparator(false);
     }
     else
@@ -210,9 +210,9 @@ void setupBrightnessSchedule()
   brightnessSchedule.setup(10, 18, 40);
 }
 
-void setupMicroModeSchedule()
+void setupMinimalModeSchedule()
 {
-  Serial.println("Setting up micro mode schedule...");
+  Serial.println("Setting up minimal mode schedule...");
   brightnessSchedule.setup(6, 7, true);
 }
 
