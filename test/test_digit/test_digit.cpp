@@ -147,6 +147,54 @@ void test_space(void)
     assert();
 }
 
+void test_two_dots(void)
+{
+    expected.setLedRange(15, 16, true);
+    target.setDots(2);
+    assert();
+}
+
+void test_three_dots(void)
+{
+    expected.setSegment(5, true);
+    target.setDots(3);
+    assert();
+}
+
+void test_five_dots(void)
+{
+    expected.setSegment(5, true);
+    expected.setLedRange(10, 11, true);
+    target.setDots(5);
+    assert();
+}
+
+void test_six_dots(void)
+{
+    expected.setSegment(5, true);
+    expected.setSegment(3, true);
+    target.setDots(6);
+    assert();
+}
+
+void test_eight_dots(void)
+{
+    expected.setSegment(5, true);
+    expected.setSegment(3, true);
+    expected.setLedRange(3, 4, true);
+    target.setDots(8);
+    assert();
+}
+
+void test_nine_dots(void)
+{
+    expected.setSegment(5, true);
+    expected.setSegment(3, true);
+    expected.setSegment(1, true);
+    target.setDots(9);
+    assert();
+}
+
 int main(int argc, char **argv)
 {
     UNITY_BEGIN();
@@ -168,6 +216,12 @@ int main(int argc, char **argv)
     RUN_TEST(test_o);
     RUN_TEST(test_l);
     RUN_TEST(test_space);
+    RUN_TEST(test_two_dots);
+    RUN_TEST(test_three_dots);
+    RUN_TEST(test_five_dots);
+    RUN_TEST(test_six_dots);
+    RUN_TEST(test_eight_dots);
+    RUN_TEST(test_nine_dots);
     UNITY_END();
 
     return 0;

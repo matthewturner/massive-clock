@@ -122,6 +122,29 @@ void Digit::setSegment(byte segment, bool show)
   }
 }
 
+void Digit::fillSegment(byte segment, byte max)
+{
+  byte startIndex = segment * LEDS_PER_SEGMENT;
+  switch (segment)
+  {
+  case SEG_TOP_RIGHT:
+  case SEG_TOP:
+  case SEG_BOTTOM:
+  case SEG_BOTTOM_LEFT:
+    for (byte i = 0; i < max; i++)
+    {
+      _leds[i + startIndex] = true;
+    }
+    break;
+  default:
+    for (byte i = LEDS_PER_SEGMENT - max; i < LEDS_PER_SEGMENT; i++)
+    {
+      _leds[i + startIndex] = true;
+    }
+    break;
+  }
+}
+
 void Digit::setSegmentRange(byte first, byte last, bool show)
 {
   for (byte i = first; i <= last; i++)
@@ -148,76 +171,40 @@ void Digit::setDots(byte count)
   switch (count)
   {
   case 1:
-    _leds[15] = true;
+    fillSegment(SEG_BOTTOM, 1);
     break;
   case 2:
-    _leds[15] = true;
-    _leds[16] = true;
+    fillSegment(SEG_BOTTOM, 2);
     break;
   case 3:
-    _leds[15] = true;
-    _leds[16] = true;
-    _leds[17] = true;
+    fillSegment(SEG_BOTTOM, 3);
     break;
   case 4:
-    _leds[15] = true;
-    _leds[16] = true;
-    _leds[17] = true;
-
-    _leds[11] = true;
+    fillSegment(SEG_BOTTOM, 3);
+    fillSegment(SEG_MIDDLE, 1);
     break;
   case 5:
-    _leds[15] = true;
-    _leds[16] = true;
-    _leds[17] = true;
-
-    _leds[11] = true;
-    _leds[10] = true;
+    fillSegment(SEG_BOTTOM, 3);
+    fillSegment(SEG_MIDDLE, 2);
     break;
   case 6:
-    _leds[15] = true;
-    _leds[16] = true;
-    _leds[17] = true;
-
-    _leds[11] = true;
-    _leds[10] = true;
-    _leds[9] = true;
+    fillSegment(SEG_BOTTOM, 3);
+    fillSegment(SEG_MIDDLE, 3);
     break;
   case 7:
-    _leds[15] = true;
-    _leds[16] = true;
-    _leds[17] = true;
-
-    _leds[11] = true;
-    _leds[10] = true;
-    _leds[9] = true;
-
-    _leds[3] = true;
+    fillSegment(SEG_BOTTOM, 3);
+    fillSegment(SEG_MIDDLE, 3);
+    fillSegment(SEG_TOP, 1);
     break;
   case 8:
-    _leds[15] = true;
-    _leds[16] = true;
-    _leds[17] = true;
-
-    _leds[11] = true;
-    _leds[10] = true;
-    _leds[9] = true;
-
-    _leds[3] = true;
-    _leds[4] = true;
+    fillSegment(SEG_BOTTOM, 3);
+    fillSegment(SEG_MIDDLE, 3);
+    fillSegment(SEG_TOP, 2);
     break;
   case 9:
-    _leds[15] = true;
-    _leds[16] = true;
-    _leds[17] = true;
-
-    _leds[11] = true;
-    _leds[10] = true;
-    _leds[9] = true;
-
-    _leds[3] = true;
-    _leds[4] = true;
-    _leds[5] = true;
+    fillSegment(SEG_BOTTOM, 3);
+    fillSegment(SEG_MIDDLE, 3);
+    fillSegment(SEG_TOP, 3);
     break;
   }
 }
