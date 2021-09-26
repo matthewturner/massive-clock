@@ -195,6 +195,14 @@ void test_nine_dots(void)
     assert();
 }
 
+void test_dots_clear_first(void)
+{
+    expected.setSegment(5, true);
+    target.setDots(9);
+    target.setDots(3);
+    assert();
+}
+
 int main(int argc, char **argv)
 {
     UNITY_BEGIN();
@@ -222,6 +230,7 @@ int main(int argc, char **argv)
     RUN_TEST(test_six_dots);
     RUN_TEST(test_eight_dots);
     RUN_TEST(test_nine_dots);
+    RUN_TEST(test_dots_clear_first);
     UNITY_END();
 
     return 0;

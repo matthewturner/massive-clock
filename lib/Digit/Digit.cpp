@@ -168,6 +168,8 @@ void Digit::setLed(byte led, bool show)
 
 void Digit::setDots(byte count)
 {
+  setAll(false);
+
   byte overflow = count % LEDS_PER_SEGMENT;
   byte layers = count / LEDS_PER_SEGMENT;
   switch (layers)
