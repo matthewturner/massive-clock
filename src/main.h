@@ -34,7 +34,7 @@ Schedule<CRGB::HTMLColorCode> colorSchedule(CRGB::Red);
 Schedule<bool> displaySchedule(false);
 Schedule<bool> separatorSchedule(false);
 Schedule<byte> brightnessSchedule(5);
-Schedule<bool> minimalSchedule(false);
+Schedule<Flags> minimalSchedule(Flags::NONE);
 
 EvtTimeListener *updateListener;
 EvtTimeListener *renderListener;

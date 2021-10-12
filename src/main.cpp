@@ -69,18 +69,10 @@ bool update()
 
   if (displaySchedule.valueFor(now.hour()))
   {
-    if (minimalSchedule.valueFor(now.hour()))
-    {
-      pendingDisplay.setPart(1, now.hour(), Flags::MINIMAL);
-      pendingDisplay.setPart(0, now.minute(), (Flags)(Flags::LEADING_ZERO | Flags::MINIMAL));
-      pendingDisplay.setSeparator(false);
-    }
-    else
-    {
-      pendingDisplay.setPart(1, now.hour(), Flags::NONE);
-      pendingDisplay.setPart(0, now.minute(), Flags::LEADING_ZERO);
-      pendingDisplay.setSeparator(true);
-    }
+    Flags mode = minimalSchedule.valueFor(now.hour());
+    pendingDisplay.setPart(1, now.hour(), mode);
+    pendingDisplay.setPart(0, now.minute(), (Flags)(mode | Flags::LEADING_ZERO));
+    pendingDisplay.setSeparator(mode == Flags::NONE);
   }
   else
   {
@@ -213,7 +205,7 @@ void setupBrightnessSchedule()
 void setupMinimalModeSchedule()
 {
   Serial.println("Setting up minimal mode schedule...");
-  minimalSchedule.setup(6, 6, true);
+  minimalSchedule.setup(6, 6, Flags::SUPER_MINIMAL);
 }
 
 void setupRealtimeClock()

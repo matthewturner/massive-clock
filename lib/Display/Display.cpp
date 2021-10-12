@@ -69,8 +69,13 @@ void Display::setPart(byte part, byte value, Flags flags)
   }
   byte tens = (value - (value % 10)) / 10;
   byte unit = value % 10;
+  bool superMinimalMode = ((flags & Flags::SUPER_MINIMAL) == Flags::SUPER_MINIMAL);
   bool minimalMode = ((flags & Flags::MINIMAL) == Flags::MINIMAL);
-  if (minimalMode)
+  if (superMinimalMode)
+  {
+    setDots(0 + offset, 0);
+  }
+  else if (minimalMode)
   {
     setDots(0 + offset, unit);
   }
@@ -81,7 +86,11 @@ void Display::setPart(byte part, byte value, Flags flags)
   bool leadingZero = ((flags & Flags::LEADING_ZERO) == Flags::LEADING_ZERO);
   if (leadingZero || tens > 0)
   {
-    if (minimalMode)
+    if (superMinimalMode)
+    {
+      setDots(1 + offset, tens);
+    }
+    else if (minimalMode)
     {
       setDots(1 + offset, tens);
     }
