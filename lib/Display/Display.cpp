@@ -90,7 +90,7 @@ void Display::setPart(byte part, byte value, Flags flags)
     {
       setDots(1 + offset, tens);
     }
-    if (minimalMode)
+    else if (minimalMode)
     {
       setDots(1 + offset, tens);
     }
