@@ -154,6 +154,13 @@ void test_flags_single(void)
     TEST_ASSERT_FALSE((f & Flags::LEADING_ZERO) == Flags::LEADING_ZERO);
 }
 
+void test_set_thirty_three_in_super_minimal_mode(void)
+{
+    expected.setLedRange(21, 23, true);
+    target.setPart(0, 33, Flags::SUPER_MINIMAL);
+    assert();
+}
+
 int main(int argc, char **argv)
 {
     UNITY_BEGIN();
@@ -176,6 +183,7 @@ int main(int argc, char **argv)
     RUN_TEST(test_flags_multiple);
     RUN_TEST(test_flags_single);
     RUN_TEST(test_set_thirty_three_in_minimal_mode);
+    RUN_TEST(test_set_thirty_three_in_super_minimal_mode);
     UNITY_END();
 
     return 0;
