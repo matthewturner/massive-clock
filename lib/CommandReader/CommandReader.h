@@ -2,12 +2,14 @@
 #define CommandReader_h
 
 #include "IStreamReader.h"
+
+#include <stdlib.h>
 #include "stdint.h"
 #include "string.h"
 
 enum commands
 {
-    NONE = 0,
+    CNONE = 0,
     STOP = 1,
     CALIBRATE = 2,
     LEFT = 3,

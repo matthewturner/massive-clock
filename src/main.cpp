@@ -3,6 +3,9 @@
 void setup()
 {
   Serial.begin(115200);
+
+  pinMode(RECEIVE_PIN, INPUT);
+  pinMode(TRANSMIT_PIN, OUTPUT);
   bluetoothSerial.begin(115200);
 
   pinMode(SHOW_PIN, INPUT_PULLUP);
@@ -64,10 +67,21 @@ bool sleep()
 
 bool process()
 {
-  while (bluetoothSerial.available())
+  commandReader.tryReadCommand(&command);
+  switch (command.Value)
   {
-
+  case Commands::CNONE:
+    // nothing
+    break;
+  case Commands::STATUS:
+    Serial.println("Command: STATUS");
+    break;
+  default:
+    Serial.print("Unknown command: ");
+    Serial.println(command.Value);
+    break;
   }
+  return true;
 }
 
 bool update()

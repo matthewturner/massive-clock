@@ -8,7 +8,7 @@ CommandReader::CommandReader(IStreamReader *streamReader)
 
 bool CommandReader::tryReadCommand(Command *command)
 {
-    command->Value = NONE;
+    command->Value = CNONE;
     command->Data = 0;
 
     if (tryReadInstruction())
@@ -61,7 +61,7 @@ bool CommandReader::tryReadInstruction()
 
 bool CommandReader::convertToCommand(Command *command)
 {
-    command->Value = NONE;
+    command->Value = CNONE;
     command->Data = 0;
 
     if (_commandIndex == 0)

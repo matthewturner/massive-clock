@@ -9,6 +9,8 @@
 #include <Eventually.h>
 #include <LowPower.h>
 #include <SoftwareSerial.h>
+#include "CommandReader.h"
+#include "RuntimeStreamReader.h"
 
 const short SHOW_TEMPORARILY_DURATION = 3000;
 const byte CURRENT_SCHEDULE = SUMMER_SCHEDULE;
@@ -39,6 +41,9 @@ Schedule<bool> separatorSchedule(false);
 Schedule<byte> brightnessSchedule(5);
 Schedule<Flags> minimalSchedule(Flags::NONE);
 SoftwareSerial bluetoothSerial(RECEIVE_PIN, TRANSMIT_PIN);
+RuntimeStreamReader streamReader(&bluetoothSerial);
+Command command;
+CommandReader commandReader(&streamReader);
 
 EvtTimeListener *updateListener;
 EvtTimeListener *commandListener;

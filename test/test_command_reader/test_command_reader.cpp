@@ -1,6 +1,6 @@
 #include <unity.h>
-#include "CommandReader.h"
 #include "SoftwareStreamReader.h"
+#include "CommandReader.h"
 
 SoftwareStreamReader streamReader;
 Command command;
@@ -10,7 +10,7 @@ void test_invalid_command(void)
 {
     streamReader.setCommand("blah");
     bool actual = commandReader.tryReadCommand(&command);
-    TEST_ASSERT_EQUAL(Commands::NONE, command.Value);
+    TEST_ASSERT_EQUAL(Commands::CNONE, command.Value);
 }
 
 void test_invalid_command_returns_false(void)
@@ -24,7 +24,7 @@ void test_non_terminated_command(void)
 {
     streamReader.setCommand(">calibrate");
     bool actual = commandReader.tryReadCommand(&command);
-    TEST_ASSERT_EQUAL(Commands::NONE, command.Value);
+    TEST_ASSERT_EQUAL(Commands::CNONE, command.Value);
 }
 
 void test_calibrate_command(void)
