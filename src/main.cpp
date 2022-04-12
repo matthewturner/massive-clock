@@ -2,7 +2,8 @@
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
+  bluetoothSerial.begin(115200);
 
   pinMode(SHOW_PIN, INPUT_PULLUP);
 
@@ -20,6 +21,9 @@ void setup()
 
   updateListener = new EvtTimeListener(0, true, (EvtAction)update);
   mgr.addListener(updateListener);
+
+  commandListener = new EvtTimeListener(0, true, (EvtAction)process);
+  mgr.addListener(commandListener);
 
   sleepListener = new EvtByteListener(pState, IDLE, (EvtAction)sleep);
   mgr.addListener(sleepListener);
@@ -56,6 +60,14 @@ bool sleep()
   LowPower.idle(SLEEP_8S, ADC_OFF, TIMER2_OFF, TIMER1_OFF, TIMER0_OFF,
                 SPI_OFF, USART0_OFF, TWI_OFF);
   return true;
+}
+
+bool process()
+{
+  while (bluetoothSerial.available())
+  {
+
+  }
 }
 
 bool update()

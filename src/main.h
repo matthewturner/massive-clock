@@ -8,12 +8,15 @@
 #include <RTClib.h>
 #include <Eventually.h>
 #include <LowPower.h>
+#include <SoftwareSerial.h>
 
 const short SHOW_TEMPORARILY_DURATION = 3000;
 const byte CURRENT_SCHEDULE = SUMMER_SCHEDULE;
 
 const byte DATA_PIN = 3;
 const byte CLOCK_PIN = 13;
+const byte TRANSMIT_PIN = 5;
+const byte RECEIVE_PIN = 6;
 
 const byte SHOW_PIN = 2;
 const bool CLOCK_IS_ENABLED = true;
@@ -35,8 +38,10 @@ Schedule<bool> displaySchedule(false);
 Schedule<bool> separatorSchedule(false);
 Schedule<byte> brightnessSchedule(5);
 Schedule<Flags> minimalSchedule(Flags::NONE);
+SoftwareSerial bluetoothSerial(RECEIVE_PIN, TRANSMIT_PIN);
 
 EvtTimeListener *updateListener;
+EvtTimeListener *commandListener;
 EvtTimeListener *renderListener;
 EvtByteListener *showTemporarilyListener;
 EvtTimeListener *returnToNormalListener;
@@ -50,6 +55,7 @@ bool update();
 bool sleep();
 bool showTemporarily();
 bool returnToNormal();
+bool process();
 
 void setupColorSchedule();
 void setupDisplaySchedule();
