@@ -61,6 +61,7 @@ bool sleep();
 bool showTemporarily();
 bool returnToNormal();
 bool processCommands();
+void reportStatus();
 
 void setupColorSchedule();
 void setupDisplaySchedule();

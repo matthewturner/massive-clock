@@ -80,6 +80,7 @@ bool processCommands()
     break;
   case Commands::STATUS:
     Serial.println("Command: STATUS");
+    reportStatus();
     break;
   default:
     Serial.print("Unknown command: ");
@@ -196,6 +197,14 @@ void render()
   }
 
   FastLED.show();
+}
+
+void reportStatus()
+{
+  bluetoothSerial.println("{");
+  bluetoothSerial.print("  \"time\": ");
+  bluetoothSerial.println(clock.now().unixtime());
+  bluetoothSerial.println("}");
 }
 
 void setupColorSchedule()
