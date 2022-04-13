@@ -22,11 +22,11 @@ void setup()
   setupMinimalModeSchedule();
   setupTest();
 
+  commandListener = new EvtTimeListener(0, true, (EvtAction)processCommands);
+  mgr.addListener(commandListener);
+
   updateListener = new EvtTimeListener(0, true, (EvtAction)update);
   mgr.addListener(updateListener);
-
-  commandListener = new EvtTimeListener(0, true, (EvtAction)process);
-  mgr.addListener(commandListener);
 
   sleepListener = new EvtByteListener(pState, IDLE, (EvtAction)sleep);
   mgr.addListener(sleepListener);
@@ -65,13 +65,18 @@ bool sleep()
   return true;
 }
 
-bool process()
+bool processCommands()
 {
   commandReader.tryReadCommand(&command);
   switch (command.Value)
   {
   case Commands::CNONE:
     // nothing
+    break;
+  case Commands::SET:
+    Serial.println("Command: SET");
+    clock.adjust(DateTime(command.Data));
+    showTemporarily();
     break;
   case Commands::STATUS:
     Serial.println("Command: STATUS");

@@ -60,7 +60,7 @@ bool update();
 bool sleep();
 bool showTemporarily();
 bool returnToNormal();
-bool process();
+bool processCommands();
 
 void setupColorSchedule();
 void setupDisplaySchedule();

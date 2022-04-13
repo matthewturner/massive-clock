@@ -10,11 +10,8 @@
 enum commands
 {
     CNONE = 0,
-    STOP = 1,
-    CALIBRATE = 2,
-    LEFT = 3,
-    RIGHT = 4,
-    MOVE_TO = 5,
+    SET = 1,
+    SHOW = 2,
     STATUS = 6
 };
 typedef enum commands Commands;
@@ -22,7 +19,7 @@ typedef enum commands Commands;
 struct command
 {
     Commands Value;
-    short Data;
+    long Data;
 };
 typedef struct command Command;
 
@@ -36,9 +33,9 @@ private:
     bool tryReadInstruction();
     bool convertToCommand(Command *command);
     char _commandBuffer[20];
-    char _dataBuffer[20];
+    char _dataBuffer[40];
     short _commandIndex = -1;
-    short _dataIndex = -1;
+    long _dataIndex = -1;
     IStreamReader *_streamReader;
 };
 

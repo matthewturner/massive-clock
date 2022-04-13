@@ -68,30 +68,15 @@ bool CommandReader::convertToCommand(Command *command)
     {
         return false;
     }
-    if (strcmp(_commandBuffer, "stop") == 0)
+    if (strcmp(_commandBuffer, "set") == 0)
     {
-        command->Value = STOP;
-        return true;
-    }
-    if (strcmp(_commandBuffer, "calibrate") == 0)
-    {
-        command->Value = CALIBRATE;
-        return true;
-    }
-    if (strcmp(_commandBuffer, "left") == 0)
-    {
-        command->Value = LEFT;
-        return true;
-    }
-    if (strcmp(_commandBuffer, "right") == 0)
-    {
-        command->Value = RIGHT;
-        return true;
-    }
-    if (strcmp(_commandBuffer, "move-to") == 0)
-    {
-        command->Value = MOVE_TO;
+        command->Value = SET;
         command->Data = atoi(_dataBuffer);
+        return true;
+    }
+    if (strcmp(_commandBuffer, "show") == 0)
+    {
+        command->Value = SHOW;
         return true;
     }
     if (strcmp(_commandBuffer, "status") == 0)
