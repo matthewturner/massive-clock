@@ -1,5 +1,4 @@
 #include "CommandReader.h"
-#include <stdlib.h>
 
 CommandReader::CommandReader(IStreamReader *streamReader)
 {
