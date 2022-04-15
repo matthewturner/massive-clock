@@ -4,9 +4,9 @@ void setup()
 {
   Serial.begin(115200);
 
-  pinMode(RECEIVE_PIN, INPUT);
-  pinMode(TRANSMIT_PIN, OUTPUT);
-  bluetoothSerial.begin(115200);
+  // pinMode(RECEIVE_PIN, INPUT);
+  // pinMode(TRANSMIT_PIN, OUTPUT);
+  // bluetoothSerial.begin(38400);
 
   pinMode(SHOW_PIN, INPUT_PULLUP);
 
@@ -22,8 +22,8 @@ void setup()
   setupMinimalModeSchedule();
   setupTest();
 
-  commandListener = new EvtTimeListener(0, true, (EvtAction)processCommands);
-  mgr.addListener(commandListener);
+  // commandListener = new EvtTimeListener(0, true, (EvtAction)processCommands);
+  // mgr.addListener(commandListener);
 
   updateListener = new EvtTimeListener(0, true, (EvtAction)update);
   mgr.addListener(updateListener);
