@@ -70,7 +70,7 @@ bool CommandReader::convertToCommand(Command *command)
     if (strcmp(_commandBuffer, "set") == 0)
     {
         command->Value = SET;
-        command->Data = atoi(_dataBuffer);
+        command->Data = atol(_dataBuffer);
         return true;
     }
     if (strcmp(_commandBuffer, "show") == 0)
