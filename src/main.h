@@ -6,6 +6,7 @@
 #include "Display.h"
 #include "Schedule.h"
 #include <RTClib.h>
+#include <Timezone.h>
 #include <Eventually.h>
 #include <LowPower.h>
 #include <SoftwareSerial.h>
@@ -34,7 +35,7 @@ Display display;
 Display pendingDisplay;
 RTC_DS3231 clock;
 EvtManager mgr;
-DateTime now;
+Timezone *timezone;
 Schedule<CRGB::HTMLColorCode> colorSchedule(CRGB::Red);
 Schedule<bool> displaySchedule(false);
 Schedule<bool> separatorSchedule(false);
@@ -62,12 +63,14 @@ bool showTemporarily();
 bool returnToNormal();
 bool processCommands();
 void reportStatus();
+DateTime toLocal(DateTime utc);
 
 void setupColorSchedule();
 void setupDisplaySchedule();
 void setupBrightnessSchedule();
 void setupRealtimeClock();
 void setupMinimalModeSchedule();
+void setupTimezones();
 void setupTest();
 
 #endif
