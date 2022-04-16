@@ -12,6 +12,6 @@ bool RuntimeStreamReader::available()
 
 int RuntimeStreamReader::read()
 {
-    delay(2);
+    delay(20);
     return _stream->read();
 }
