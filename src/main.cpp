@@ -2,7 +2,11 @@
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
+
+  pinMode(RECEIVE_PIN, INPUT);
+  pinMode(TRANSMIT_PIN, OUTPUT);
+  bluetoothSerial.begin(9600);
 
   pinMode(SHOW_PIN, INPUT_PULLUP);
 
@@ -17,6 +21,9 @@ void setup()
   setupBrightnessSchedule();
   setupMinimalModeSchedule();
   setupTest();
+
+  commandListener = new EvtTimeListener(0, true, (EvtAction)processCommands);
+  mgr.addListener(commandListener);
 
   updateListener = new EvtTimeListener(0, true, (EvtAction)update);
   mgr.addListener(updateListener);
@@ -33,7 +40,7 @@ void setup()
 
   attachInterrupt(digitalPinToInterrupt(SHOW_PIN), wakeup, LOW);
 
-  Serial.println("Setup complete. Continuing...");
+  Serial.println(F("Setup complete. Continuing..."));
 }
 
 void loop()
@@ -51,16 +58,46 @@ void wakeup()
 
 bool sleep()
 {
-  Serial.println("Sleeping...");
+  Serial.println(F("Sleeping..."));
   Serial.flush();
   LowPower.idle(SLEEP_8S, ADC_OFF, TIMER2_OFF, TIMER1_OFF, TIMER0_OFF,
                 SPI_OFF, USART0_OFF, TWI_OFF);
   return true;
 }
 
+bool processCommands()
+{
+  commandReader.tryReadCommand(&command);
+  switch (command.Value)
+  {
+  case Commands::CNONE:
+    // nothing
+    // Serial.println("Command: NONE");
+    break;
+  case Commands::SHOW:
+    Serial.println(F("Command: SHOW"));
+    showTemporarily();
+    break;
+  case Commands::SET:
+    Serial.println(F("Command: SET"));
+    clock.adjust(DateTime(command.Data));
+    showTemporarily();
+    break;
+  case Commands::STATUS:
+    Serial.println(F("Command: STATUS"));
+    reportStatus();
+    break;
+  default:
+    Serial.print(F("Unknown command: "));
+    Serial.println(command.Value);
+    break;
+  }
+  return true;
+}
+
 bool update()
 {
-  Serial.println("Updating...");
+  Serial.println(F("Updating..."));
 
   if (CLOCK_IS_ENABLED)
   {
@@ -94,17 +131,17 @@ bool update()
 
 void setState(byte newState)
 {
-  Serial.print("Setting state: ");
+  Serial.print(F("Setting state: "));
   switch (newState)
   {
   case PENDING:
-    Serial.println("PENDING");
+    Serial.println(F("PENDING"));
     break;
   case IN_PROGRESS:
-    Serial.println("IN_PROGRESS");
+    Serial.println(F("IN_PROGRESS"));
     break;
   case IDLE:
-    Serial.println("IDLE");
+    Serial.println(F("IDLE"));
     break;
   }
   state = newState;
@@ -112,7 +149,7 @@ void setState(byte newState)
 
 bool showTemporarily()
 {
-  Serial.println("Showing temporarily...");
+  Serial.println(F("Showing temporarily..."));
   setState(IN_PROGRESS);
 
   updateListener->disable();
@@ -138,7 +175,7 @@ bool showTemporarily()
 
 bool returnToNormal()
 {
-  Serial.println("Returning to normal...");
+  Serial.println(F("Returning to normal..."));
   returnToNormalListener->disable();
   updateListener->enable();
 
@@ -167,9 +204,17 @@ void render()
   FastLED.show();
 }
 
+void reportStatus()
+{
+  bluetoothSerial.println(F("{"));
+  bluetoothSerial.print(F("  \"time\": "));
+  bluetoothSerial.println(clock.now().unixtime());
+  bluetoothSerial.println(F("}"));
+}
+
 void setupColorSchedule()
 {
-  Serial.println("Setup color schedule...");
+  Serial.println(F("Setup color schedule..."));
   // daylight
   colorSchedule.setup(8, 20, CRGB::Blue);
   // morning
@@ -180,7 +225,7 @@ void setupColorSchedule()
 
 void setupDisplaySchedule()
 {
-  Serial.println("Setting up display schedule...");
+  Serial.println(F("Setting up display schedule..."));
 
   separatorSchedule.setup(6, 10, true);
   separatorSchedule.setup(19, 21, true);
@@ -198,13 +243,13 @@ void setupDisplaySchedule()
 
 void setupBrightnessSchedule()
 {
-  Serial.println("Setting up brightness schedule...");
+  Serial.println(F("Setting up brightness schedule..."));
   brightnessSchedule.setup(10, 18, 40);
 }
 
 void setupMinimalModeSchedule()
 {
-  Serial.println("Setting up minimal mode schedule...");
+  Serial.println(F("Setting up minimal mode schedule..."));
   minimalSchedule.setup(6, 6, Flags::SUPER_MINIMAL);
 }
 
@@ -212,7 +257,7 @@ void setupRealtimeClock()
 {
   if (!CLOCK_IS_ENABLED)
   {
-    Serial.println("Clock is disabled");
+    Serial.println(F("Clock is disabled"));
     now = DateTime(2014, 1, 21, 3, 0, 0);
     return;
   }
@@ -222,7 +267,7 @@ void setupRealtimeClock()
 
   if (!clock.begin())
   {
-    Serial.println("Couldn't find Realtime Clock");
+    Serial.println(F("Couldn't find Realtime Clock"));
     Serial.flush();
     display.setText("cloc");
     render();
@@ -232,7 +277,7 @@ void setupRealtimeClock()
 
   if (clock.lostPower())
   {
-    Serial.println("Realtime Clock lost power, setting the time...");
+    Serial.println(F("Realtime Clock lost power, setting the time..."));
     display.setText("lost");
     render();
     delay(1000);
@@ -241,7 +286,7 @@ void setupRealtimeClock()
   }
   if (digitalRead(SHOW_PIN) == LOW)
   {
-    Serial.println("Manual override: setting the time...");
+    Serial.println(F("Manual override: setting the time..."));
     display.setText("rset");
     render();
     delay(1000);
@@ -251,7 +296,7 @@ void setupRealtimeClock()
 
 void setupTest()
 {
-  Serial.println("Testing display 88...");
+  Serial.println(F("Testing display 88..."));
   display.setPart(0, 88, Flags::NONE);
   display.setBrightness(20);
   display.setColor(CRGB::Blue);
