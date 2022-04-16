@@ -20,6 +20,7 @@ void setup()
   setupDisplaySchedule();
   setupBrightnessSchedule();
   setupMinimalModeSchedule();
+  setupTimezones();
   setupTest();
 
   commandListener = new EvtTimeListener(0, true, (EvtAction)processCommands);
@@ -79,7 +80,8 @@ bool processCommands()
     showTemporarily();
     break;
   case Commands::SET:
-    Serial.println(F("Command: SET"));
+    Serial.print(F("Command: SET "));
+    Serial.println(command.Data);
     clock.adjust(DateTime(command.Data));
     showTemporarily();
     break;
@@ -99,9 +101,10 @@ bool update()
 {
   Serial.println(F("Updating..."));
 
+  DateTime now = DateTime();
   if (CLOCK_IS_ENABLED)
   {
-    now = clock.now();
+    now = toLocal(clock.now());
   }
 
   if (displaySchedule.valueFor(now.hour()))
@@ -155,10 +158,12 @@ bool showTemporarily()
   updateListener->disable();
   returnToNormalListener->enable();
 
+  DateTime now = DateTime();
   if (CLOCK_IS_ENABLED)
   {
-    now = clock.now();
+    now = toLocal(clock.now());
   }
+
   display.setPart(1, now.hour(), Flags::NONE);
   display.setPart(0, now.minute(), Flags::LEADING_ZERO);
   display.setSeparator(true);
@@ -204,11 +209,24 @@ void render()
   FastLED.show();
 }
 
+DateTime toLocal(DateTime utc)
+{
+  time_t local = timezone->toLocal(utc.unixtime());
+  return DateTime(local);
+}
+
 void reportStatus()
 {
   bluetoothSerial.println(F("{"));
   bluetoothSerial.print(F("  \"time\": "));
-  bluetoothSerial.println(clock.now().unixtime());
+  if(CLOCK_IS_ENABLED)
+  {
+    bluetoothSerial.println(clock.now().unixtime());
+  }
+  else
+  {
+    bluetoothSerial.println(0);
+  }
   bluetoothSerial.println(F("}"));
 }
 
@@ -258,7 +276,6 @@ void setupRealtimeClock()
   if (!CLOCK_IS_ENABLED)
   {
     Serial.println(F("Clock is disabled"));
-    now = DateTime(2014, 1, 21, 3, 0, 0);
     return;
   }
 
@@ -316,4 +333,13 @@ void setupTest()
   render();
   delay(500);
   display.clear();
+}
+
+void setupTimezones()
+{
+  Serial.println(F("Setup timezones..."));
+
+  timezone = new Timezone(
+      TimeChangeRule("BST", Last, Sun, Mar, 1, 60),
+      TimeChangeRule("GMT", Last, Sun, Oct, 2, 0));
 }
