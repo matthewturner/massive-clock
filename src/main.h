@@ -25,11 +25,9 @@ const byte SHOW_PIN = 2;
 const bool CLOCK_IS_ENABLED = true;
 
 const byte IDLE = 0;
-const byte PENDING = 1;
-const byte IN_PROGRESS = 2;
+const byte UPDATING = 1;
+const byte SHOWING = 2;
 
-volatile byte state = IDLE;
-volatile byte *pState = &state;
 CRGB physicalLeds[NUM_LEDS];
 Display display;
 Display pendingDisplay;
@@ -46,21 +44,14 @@ RuntimeStreamReader streamReader(&bluetoothSerial);
 Command command;
 CommandReader commandReader(&streamReader);
 
-EvtTimeListener *updateListener;
-EvtTimeListener *commandListener;
-EvtTimeListener *renderListener;
-EvtByteListener *showTemporarilyListener;
-EvtTimeListener *returnToNormalListener;
-EvtByteListener *sleepListener;
+StateMachineListener stateMachine;
 
-void setState(byte state);
-void wakeup();
+void onInterrupt();
 void render();
 void render(CRGB::HTMLColorCode colorCode, byte brightness);
-bool update();
-bool sleep();
-bool showTemporarily();
-bool returnToNormal();
+bool updating();
+bool idle();
+bool showing();
 bool processCommands();
 void reportStatus();
 DateTime toLocal(DateTime utc);
