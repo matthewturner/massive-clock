@@ -23,41 +23,22 @@ void setup()
   setupTimezones();
   setupTest();
 
-  commandListener = new EvtTimeListener(0, true, (EvtAction)processCommands);
-  mgr.addListener(commandListener);
+  stateMachine.when(IDLE, (EvtAction)idle, UPDATING);
+  stateMachine.when(SHOWING, (EvtAction)showing, UPDATING, STATE_FAILED, SHOW_TEMPORARILY_DURATION);
+  stateMachine.when(UPDATING, (EvtAction)updating, PROCESSING);
+  stateMachine.when(PROCESSING, (EvtAction)processingCommands, IDLE);
 
-  updateListener = new EvtTimeListener(0, true, (EvtAction)update);
-  mgr.addListener(updateListener);
+  stateMachine.whenInterrupted(IDLE, SHOWING);
+  stateMachine.transition(UPDATING);
 
-  sleepListener = new EvtByteListener(pState, IDLE, (EvtAction)sleep);
-  mgr.addListener(sleepListener);
+  mgr.addListener(&stateMachine);
 
-  showTemporarilyListener = new EvtByteListener(pState, PENDING, (EvtAction)showTemporarily);
-  mgr.addListener(showTemporarilyListener);
-
-  returnToNormalListener = new EvtTimeListener(SHOW_TEMPORARILY_DURATION, true, (EvtAction)returnToNormal);
-  returnToNormalListener->disable();
-  mgr.addListener(returnToNormalListener);
-
-  attachInterrupt(digitalPinToInterrupt(SHOW_PIN), wakeup, LOW);
+  attachInterrupt(digitalPinToInterrupt(SHOW_PIN), onInterrupt, FALLING);
 
   Serial.println(F("Setup complete. Continuing..."));
 }
 
-void loop()
-{
-  mgr.loopIteration();
-}
-
-void wakeup()
-{
-  if (state == IDLE)
-  {
-    setState(PENDING);
-  }
-}
-
-bool sleep()
+bool idle()
 {
   Serial.println(F("Sleeping..."));
   Serial.flush();
@@ -66,7 +47,7 @@ bool sleep()
   return true;
 }
 
-bool processCommands()
+bool processingCommands()
 {
   commandReader.tryReadCommand(&command);
   switch (command.Value)
@@ -77,13 +58,13 @@ bool processCommands()
     break;
   case Commands::SHOW:
     Serial.println(F("Command: SHOW"));
-    showTemporarily();
+    stateMachine.transition(SHOWING);
     break;
   case Commands::SET:
     Serial.print(F("Command: SET "));
     Serial.println(command.Data);
     clock.adjust(DateTime(command.Data));
-    showTemporarily();
+    stateMachine.transition(SHOWING);
     break;
   case Commands::STATUS:
     Serial.println(F("Command: STATUS"));
@@ -97,7 +78,7 @@ bool processCommands()
   return true;
 }
 
-bool update()
+bool updating()
 {
   Serial.println(F("Updating..."));
 
@@ -132,31 +113,9 @@ bool update()
   return true;
 }
 
-void setState(byte newState)
-{
-  Serial.print(F("Setting state: "));
-  switch (newState)
-  {
-  case PENDING:
-    Serial.println(F("PENDING"));
-    break;
-  case IN_PROGRESS:
-    Serial.println(F("IN_PROGRESS"));
-    break;
-  case IDLE:
-    Serial.println(F("IDLE"));
-    break;
-  }
-  state = newState;
-}
-
-bool showTemporarily()
+bool showing()
 {
   Serial.println(F("Showing temporarily..."));
-  setState(IN_PROGRESS);
-
-  updateListener->disable();
-  returnToNormalListener->enable();
 
   DateTime now = DateTime();
   if (CLOCK_IS_ENABLED)
@@ -174,17 +133,6 @@ bool showTemporarily()
   display.setBrightness(brightness);
 
   render();
-
-  return true;
-}
-
-bool returnToNormal()
-{
-  Serial.println(F("Returning to normal..."));
-  returnToNormalListener->disable();
-  updateListener->enable();
-
-  setState(IDLE);
 
   return true;
 }
@@ -219,7 +167,7 @@ void reportStatus()
 {
   bluetoothSerial.println(F("{"));
   bluetoothSerial.print(F("  \"time\": "));
-  if(CLOCK_IS_ENABLED)
+  if (CLOCK_IS_ENABLED)
   {
     bluetoothSerial.println(clock.now().unixtime());
   }
@@ -342,4 +290,14 @@ void setupTimezones()
   timezone = new Timezone(
       TimeChangeRule("BST", Last, Sun, Mar, 1, 60),
       TimeChangeRule("GMT", Last, Sun, Oct, 2, 0));
+}
+
+void loop()
+{
+  mgr.loopIteration();
+}
+
+void onInterrupt()
+{
+  stateMachine.onInterrupt();
 }
