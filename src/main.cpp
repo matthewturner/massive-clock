@@ -23,11 +23,13 @@ void setup()
   setupTimezones();
   setupTest();
 
-  stateMachine.when(IDLE, (EvtAction)idle, UPDATING);
+  stateMachine.when(IDLE, (EvtAction)idle);
   stateMachine.when(SHOWING, (EvtAction)showing, UPDATING, STATE_FAILED, SHOW_TEMPORARILY_DURATION);
   stateMachine.when(UPDATING, (EvtAction)updating, IDLE);
 
   stateMachine.whenInterrupted(IDLE, SHOWING);
+
+  mgr.addListener(&stateMachine);
 
   attachInterrupt(digitalPinToInterrupt(SHOW_PIN), onInterrupt, FALLING);
 
