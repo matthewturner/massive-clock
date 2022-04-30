@@ -26,7 +26,8 @@ const bool CLOCK_IS_ENABLED = true;
 
 const byte IDLE = 0;
 const byte UPDATING = 1;
-const byte SHOWING = 2;
+const byte PROCESSING = 2;
+const byte SHOWING = 3;
 
 CRGB physicalLeds[NUM_LEDS];
 Display display;
@@ -52,7 +53,7 @@ void render(CRGB::HTMLColorCode colorCode, byte brightness);
 bool updating();
 bool idle();
 bool showing();
-bool processCommands();
+bool processingCommands();
 void reportStatus();
 DateTime toLocal(DateTime utc);
 

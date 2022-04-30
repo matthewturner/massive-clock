@@ -23,11 +23,13 @@ void setup()
   setupTimezones();
   setupTest();
 
-  stateMachine.when(IDLE, (EvtAction)idle);
+  stateMachine.when(IDLE, (EvtAction)idle, UPDATING);
   stateMachine.when(SHOWING, (EvtAction)showing, UPDATING, STATE_FAILED, SHOW_TEMPORARILY_DURATION);
-  stateMachine.when(UPDATING, (EvtAction)updating, IDLE);
+  stateMachine.when(UPDATING, (EvtAction)updating, PROCESSING);
+  stateMachine.when(PROCESSING, (EvtAction)processingCommands, IDLE);
 
   stateMachine.whenInterrupted(IDLE, SHOWING);
+  stateMachine.transition(UPDATING);
 
   mgr.addListener(&stateMachine);
 
@@ -45,7 +47,7 @@ bool idle()
   return true;
 }
 
-bool processCommands()
+bool processingCommands()
 {
   commandReader.tryReadCommand(&command);
   switch (command.Value)
