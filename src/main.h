@@ -56,8 +56,9 @@ bool showing();
 bool processingCommands();
 void reportStatus();
 DateTime toLocal(DateTime utc);
+byte minutesSinceMidnight(DateTime local);
 
-void setupColorSchedule();
+    void setupColorSchedule();
 void setupDisplaySchedule();
 void setupBrightnessSchedule();
 void setupRealtimeClock();

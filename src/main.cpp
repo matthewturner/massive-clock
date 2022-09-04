@@ -163,6 +163,11 @@ DateTime toLocal(DateTime utc)
   return DateTime(local);
 }
 
+byte minutesSinceMidnight(DateTime local)
+{
+  byte minutes = local.hour() * 60 + local.minute();
+}
+
 void reportStatus()
 {
   bluetoothSerial.println(F("{"));

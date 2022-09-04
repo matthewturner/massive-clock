@@ -12,7 +12,7 @@ void tearDown(void) {}
 
 void test_initializes(void)
 {
-    for (byte i = 0; i < HOURS_IN_DAY; i++)
+    for (byte i = 0; i < SEGMENTS_IN_DAY; i++)
     {
         TEST_ASSERT_EQUAL(10, target.valueFor(i));
     }
@@ -21,7 +21,7 @@ void test_initializes(void)
 void test_setup_range(void)
 {
     target.setup(5, 6, 12);
-    for (byte i = 0; i < HOURS_IN_DAY; i++)
+    for (byte i = 0; i < SEGMENTS_IN_DAY; i++)
     {
         if (i == 5 || i == 6)
         {
