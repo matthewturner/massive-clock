@@ -6,6 +6,10 @@ SoftwareStreamReader streamReader;
 Command command;
 CommandReader commandReader(&streamReader);
 
+void setUp(void) {}
+
+void tearDown(void) {}
+
 void test_invalid_command(void)
 {
     streamReader.setCommand("blah");

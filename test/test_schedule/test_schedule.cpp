@@ -8,6 +8,8 @@ void setUp(void)
     target.reset();
 }
 
+void tearDown(void) {}
+
 void test_initializes(void)
 {
     for (byte i = 0; i < HOURS_IN_DAY; i++)

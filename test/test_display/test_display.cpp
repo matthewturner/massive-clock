@@ -11,6 +11,8 @@ void setUp(void)
     target.clear();
 }
 
+void tearDown(void) {}
+
 void test_first_digit_eight(void)
 {
     expected.setLedRange(0, 20, true);
