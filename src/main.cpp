@@ -169,13 +169,25 @@ void reportStatus()
   bluetoothSerial.print(F("  \"time\": "));
   if (CLOCK_IS_ENABLED)
   {
-    bluetoothSerial.println(clock.now().unixtime());
+    bluetoothSerial.print(clock.now().unixtime());
   }
   else
   {
-    bluetoothSerial.println(0);
+    bluetoothSerial.print(0);
   }
-  bluetoothSerial.println(F("}"));
+  bluetoothSerial.println(F(","));
+  bluetoothSerial.print(F("  \"schedules\": {"));
+  bluetoothSerial.print(F("    \"display\": ["));
+  for (byte i = 0; i < HOURS_IN_DAY; i++)
+  {
+    bluetoothSerial.print(displaySchedule.valueFor(i));
+    if (i < HOURS_IN_DAY - 1)
+    {
+      bluetoothSerial.print(F(", "));
+    }
+  }
+  bluetoothSerial.println(F("]"));
+  bluetoothSerial.println(F("  }\n}"));
 }
 
 void setupColorSchedule()

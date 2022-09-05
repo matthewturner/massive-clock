@@ -213,8 +213,8 @@ int main(int argc, char **argv)
     RUN_TEST(test_segment_two);
     RUN_TEST(test_segment_range_one_two);
     RUN_TEST(test_eight);
-    // RUN_TEST(test_zero);
-    // RUN_TEST(test_one);
+    RUN_TEST(test_zero);
+    RUN_TEST(test_one);
     RUN_TEST(test_two);
     RUN_TEST(test_four);
     RUN_TEST(test_seven);
