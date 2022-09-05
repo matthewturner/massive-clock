@@ -205,17 +205,17 @@ void setupDisplaySchedule()
 {
   Serial.println(F("Setting up display schedule..."));
 
-  separatorSchedule.setup(6, 10, true);
-  separatorSchedule.setup(19, 21, true);
-  displaySchedule.setup(19, 21, true);
+  separatorSchedule.setup(6, 8, true);
+  separatorSchedule.setup(20, 21, true);
+  displaySchedule.setup(20, 21, true);
 
   if (CURRENT_SCHEDULE == SUMMER_SCHEDULE)
   {
-    displaySchedule.setup(6, 9, true);
+    displaySchedule.setup(6, 8, true);
   }
   else
   {
-    displaySchedule.setup(7, 9, true);
+    displaySchedule.setup(7, 8, true);
   }
 }
 

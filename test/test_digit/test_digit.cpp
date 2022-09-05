@@ -43,7 +43,7 @@ void test_segment_range_one_two(void)
 
 void test_eight(void)
 {
-    expected.setSegmentRange(0, 7, true);
+    expected.setSegmentRange(0, 6, true);
     target.set(8);
     assert();
 }
@@ -51,7 +51,7 @@ void test_eight(void)
 void test_zero(void)
 {
     expected.setSegmentRange(0, 2, true);
-    expected.setSegmentRange(4, 13, true);
+    expected.setSegmentRange(4, 6, true);
     target.set(0);
     assert();
 }
