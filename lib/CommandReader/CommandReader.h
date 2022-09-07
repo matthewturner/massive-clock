@@ -12,7 +12,8 @@ enum commands
     CNONE = 0,
     SET = 1,
     SHOW = 2,
-    STATUS = 6
+    STATUS = 6,
+    SET_SCHEDULE = 7
 };
 typedef enum commands Commands;
 

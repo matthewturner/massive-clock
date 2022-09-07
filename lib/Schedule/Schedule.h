@@ -14,6 +14,14 @@ public:
     Schedule(T defaultValue)
     {
         _defaultValue = defaultValue;
+        _identifier = 99;
+        reset();
+    }
+
+    Schedule(T defaultValue, byte identifier)
+    {
+        _defaultValue = defaultValue;
+        _identifier = identifier;
         reset();
     }
 
@@ -38,9 +46,26 @@ public:
         }
     }
 
+    void update(uint32_t encodedSchedule)
+    {
+        uint32_t value = encodedSchedule % 10;
+        encodedSchedule /= 10;
+        uint32_t hour = encodedSchedule % 100;
+        encodedSchedule /= 100;
+        uint32_t identifier = encodedSchedule;
+
+        if (identifier != _identifier)
+        {
+            return;
+        }
+
+        _valuesForHour[hour] = value;
+    }
+
 private:
     T _defaultValue;
     T _valuesForHour[HOURS_IN_DAY];
+    byte _identifier;
 };
 
 #endif
