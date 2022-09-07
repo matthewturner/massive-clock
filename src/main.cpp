@@ -66,6 +66,12 @@ bool processingCommands()
     clock.adjust(DateTime(command.Data));
     stateMachine.transition(SHOWING);
     break;
+  case Commands::SET_SCHEDULE:
+    Serial.print(F("Command: SET SCHEDULE "));
+    Serial.println(command.Data);
+    displaySchedule.update(command.Data);
+    stateMachine.transition(SHOWING);
+    break;
   case Commands::STATUS:
     Serial.println(F("Command: STATUS"));
     reportStatus();
