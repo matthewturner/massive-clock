@@ -73,6 +73,12 @@ bool CommandReader::convertToCommand(Command *command)
         command->Data = atol(_dataBuffer);
         return true;
     }
+    if (strcmp(_commandBuffer, "set-schedule") == 0)
+    {
+        command->Value = SET_SCHEDULE;
+        command->Data = atol(_dataBuffer);
+        return true;
+    }
     if (strcmp(_commandBuffer, "show") == 0)
     {
         command->Value = SHOW;
