@@ -44,14 +44,22 @@ void test_update_single_value(void)
 
 void test_does_not_update_single_value(void)
 {
-    target.update(5141);
+    bool actual = target.update(5141);
     TEST_ASSERT_EQUAL(10, target.valueFor(14));
+    TEST_ASSERT_FALSE(actual);
 }
 
 void test_update_single_bool_value(void)
 {
     targetBool.update(1141);
     TEST_ASSERT_EQUAL(true, targetBool.valueFor(14));
+}
+
+void test_does_not_update_invalid_hour(void)
+{
+    bool actual = target.update(1241);
+
+    TEST_ASSERT_FALSE(actual);
 }
 
 int main(int argc, char **argv)
@@ -62,6 +70,7 @@ int main(int argc, char **argv)
     RUN_TEST(test_update_single_value);
     RUN_TEST(test_does_not_update_single_value);
     RUN_TEST(test_update_single_bool_value);
+    RUN_TEST(test_does_not_update_invalid_hour);
     UNITY_END();
 
     return 0;

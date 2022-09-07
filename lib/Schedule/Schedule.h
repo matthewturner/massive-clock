@@ -46,20 +46,26 @@ public:
         }
     }
 
-    void update(uint32_t encodedSchedule)
+    bool update(uint32_t encodedSchedule)
     {
         uint32_t value = encodedSchedule % 10;
         encodedSchedule /= 10;
         uint32_t hour = encodedSchedule % 100;
+        if (hour > 23)
+        {
+            return false;
+        }
         encodedSchedule /= 100;
         uint32_t identifier = encodedSchedule;
 
         if (identifier != _identifier)
         {
-            return;
+            return false;
         }
 
         _valuesForHour[hour] = value;
+
+        return true;
     }
 
 private:

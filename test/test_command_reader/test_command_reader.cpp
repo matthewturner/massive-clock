@@ -99,6 +99,14 @@ void test_command_with_large_data(void)
     TEST_ASSERT_EQUAL(1641092494, command.Data);
 }
 
+void test_set_schedule_command(void)
+{
+    streamReader.setCommand(">set-schedule:1141!");
+    bool actual = commandReader.tryReadCommand(&command);
+    TEST_ASSERT_EQUAL(Commands::SET_SCHEDULE, command.Value);
+    TEST_ASSERT_EQUAL(1141, command.Data);
+}
+
 int main(int argc, char **argv)
 {
     UNITY_BEGIN();
@@ -113,6 +121,7 @@ int main(int argc, char **argv)
     RUN_TEST(test_command_with_positive_data);
     RUN_TEST(test_command_with_negative_data);
     RUN_TEST(test_command_with_large_data);
+    RUN_TEST(test_set_schedule_command);
     UNITY_END();
 
     return 0;
