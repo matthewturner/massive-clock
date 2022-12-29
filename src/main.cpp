@@ -25,20 +25,18 @@ void setup()
 
   stateMachine.when(IDLE, (EvtAction)idle, UPDATING);
   stateMachine.when(SHOWING, (EvtAction)showing, UPDATING, STATE_FAILED, SHOW_TEMPORARILY_DURATION);
-  stateMachine.when(UPDATING, (EvtAction)updating, PROCESSING);
-  stateMachine.when(PROCESSING, (EvtAction)processingCommands, IDLE);
-
+  stateMachine.when(UPDATING, (EvtAction)updating, IDLE);
   stateMachine.whenInterrupted(IDLE, SHOWING);
   stateMachine.transition(UPDATING);
 
   mgr.addListener(&stateMachine);
-
-  // if (strcmp(_commandBuffer, "set") == 0) with data
-  // if (strcmp(_commandBuffer, "set-schedule") == 0) with data
-  // if (strcmp(_commandBuffer, "show") == 0)
-  // if (strcmp(_commandBuffer, "status") == 0)
-
   attachInterrupt(digitalPinToInterrupt(SHOW_PIN), onInterrupt, FALLING);
+
+  commandListener.when("set", (EvtCommandAction)set);
+  commandListener.when("set-schedule", (EvtCommandAction)setSchedule);
+  commandListener.when("show", (EvtCommandAction)show);
+  commandListener.when("status", (EvtCommandAction)status);
+  mgr.addListener(&commandListener);
 
   Serial.println(F("Setup complete. Continuing..."));
 }
@@ -52,40 +50,35 @@ bool idle()
   return true;
 }
 
-bool processingCommands()
+bool show()
 {
-  commandReader.tryReadCommand(&command);
-  switch (command.Value)
-  {
-  case Commands::CNONE:
-    // nothing
-    // Serial.println("Command: NONE");
-    break;
-  case Commands::SHOW:
-    Serial.println(F("Command: SHOW"));
-    stateMachine.transition(SHOWING);
-    break;
-  case Commands::SET:
-    Serial.print(F("Command: SET "));
-    Serial.println(command.Data);
-    clock.adjust(DateTime(command.Data));
-    stateMachine.transition(SHOWING);
-    break;
-  case Commands::SET_SCHEDULE:
-    Serial.print(F("Command: SET SCHEDULE "));
-    Serial.println(command.Data);
-    displaySchedule.update(command.Data);
-    stateMachine.transition(SHOWING);
-    break;
-  case Commands::STATUS:
-    Serial.println(F("Command: STATUS"));
-    reportStatus();
-    break;
-  default:
-    Serial.print(F("Unknown command: "));
-    Serial.println(command.Value);
-    break;
-  }
+  Serial.println(F("Command: SHOW"));
+  stateMachine.transition(SHOWING);
+  return true;
+}
+
+bool set(EvtListener *, EvtContext *, long data)
+{
+  Serial.print(F("Command: SET "));
+  Serial.println(data);
+  clock.adjust(DateTime(data));
+  stateMachine.transition(SHOWING);
+  return true;
+}
+
+bool setSchedule(EvtListener *, EvtContext *, long data)
+{
+  Serial.print(F("Command: SET SCHEDULE "));
+  Serial.println(data);
+  displaySchedule.update(data);
+  stateMachine.transition(SHOWING);
+  return true;
+}
+
+bool status()
+{
+  Serial.println(F("Command: STATUS"));
+  reportStatus();
   return true;
 }
 

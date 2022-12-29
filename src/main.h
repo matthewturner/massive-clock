@@ -50,7 +50,11 @@ void render(CRGB::HTMLColorCode colorCode, byte brightness);
 bool updating();
 bool idle();
 bool showing();
-bool processingCommands();
+bool show();
+bool set(EvtListener *, EvtContext *, long data);
+bool setSchedule(EvtListener *, EvtContext *, long data);
+bool status();
+
 void reportStatus();
 DateTime toLocal(DateTime utc);
 
