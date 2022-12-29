@@ -62,6 +62,15 @@ void test_does_not_update_invalid_hour(void)
     TEST_ASSERT_FALSE(actual);
 }
 
+void test_updates_only_specified_quarter(void)
+{
+    bool actual = target.update(114012);
+
+    TEST_ASSERT_TRUE(actual);
+    TEST_ASSERT_EQUAL(2, target.valueFor(14, 10));
+    TEST_ASSERT_EQUAL(10, target.valueFor(14, 20));
+}
+
 int main(int argc, char **argv)
 {
     UNITY_BEGIN();
@@ -71,6 +80,7 @@ int main(int argc, char **argv)
     RUN_TEST(test_does_not_update_single_value);
     RUN_TEST(test_update_single_bool_value);
     RUN_TEST(test_does_not_update_invalid_hour);
+    RUN_TEST(test_updates_only_specified_quarter);
     UNITY_END();
 
     return 0;
