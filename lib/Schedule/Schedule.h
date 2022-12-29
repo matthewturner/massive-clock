@@ -40,9 +40,9 @@ public:
 
     void reset()
     {
-        for (byte i = 0; i < BLOCKS; i++)
+        for (byte h = 0; h < HOURS_IN_DAY; h++)
         {
-            _valuesForBlock[i] = _defaultValue;
+            setValueFor(h, BlockFlags::ALL, _defaultValue);
         }
     }
 
