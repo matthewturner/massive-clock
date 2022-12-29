@@ -33,6 +33,11 @@ void setup()
 
   mgr.addListener(&stateMachine);
 
+  // if (strcmp(_commandBuffer, "set") == 0) with data
+  // if (strcmp(_commandBuffer, "set-schedule") == 0) with data
+  // if (strcmp(_commandBuffer, "show") == 0)
+  // if (strcmp(_commandBuffer, "status") == 0)
+
   attachInterrupt(digitalPinToInterrupt(SHOW_PIN), onInterrupt, FALLING);
 
   Serial.println(F("Setup complete. Continuing..."));
