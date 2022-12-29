@@ -92,7 +92,7 @@ bool updating()
     now = toLocal(clock.now());
   }
 
-  if (displaySchedule.valueFor(now.hour()))
+  if (displaySchedule.valueFor(now.hour(), now.minute()))
   {
     Flags mode = minimalSchedule.valueFor(now.hour());
     pendingDisplay.setPart(1, now.hour(), mode);

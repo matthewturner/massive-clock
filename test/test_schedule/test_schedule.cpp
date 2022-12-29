@@ -62,6 +62,79 @@ void test_does_not_update_invalid_hour(void)
     TEST_ASSERT_FALSE(actual);
 }
 
+void test_does_not_update_invalid_quarter_flag(void)
+{
+    bool actual = target.update(114161);
+
+    TEST_ASSERT_FALSE(actual);
+}
+
+void test_updates_only_specified_first_quarter(void)
+{
+    bool actual = target.update(114012);
+
+    TEST_ASSERT_TRUE(actual);
+    TEST_ASSERT_EQUAL(2, target.valueFor(14, 14));
+    TEST_ASSERT_EQUAL(10, target.valueFor(14, 29));
+    TEST_ASSERT_EQUAL(10, target.valueFor(14, 44));
+    TEST_ASSERT_EQUAL(10, target.valueFor(14, 59));
+}
+
+void test_updates_only_specified_second_quarter(void)
+{
+    bool actual = target.update(114022);
+
+    TEST_ASSERT_TRUE(actual);
+    TEST_ASSERT_EQUAL(10, target.valueFor(14, 14));
+    TEST_ASSERT_EQUAL(2, target.valueFor(14, 29));
+    TEST_ASSERT_EQUAL(10, target.valueFor(14, 44));
+    TEST_ASSERT_EQUAL(10, target.valueFor(14, 59));
+}
+
+void test_updates_only_specified_third_quarter(void)
+{
+    bool actual = target.update(114042);
+
+    TEST_ASSERT_TRUE(actual);
+    TEST_ASSERT_EQUAL(10, target.valueFor(14, 14));
+    TEST_ASSERT_EQUAL(10, target.valueFor(14, 29));
+    TEST_ASSERT_EQUAL(2, target.valueFor(14, 44));
+    TEST_ASSERT_EQUAL(10, target.valueFor(14, 59));
+}
+
+void test_updates_only_specified_last_quarter(void)
+{
+    bool actual = target.update(114082);
+
+    TEST_ASSERT_TRUE(actual);
+    TEST_ASSERT_EQUAL(10, target.valueFor(14, 14));
+    TEST_ASSERT_EQUAL(10, target.valueFor(14, 29));
+    TEST_ASSERT_EQUAL(10, target.valueFor(14, 44));
+    TEST_ASSERT_EQUAL(2, target.valueFor(14, 59));
+}
+
+void test_updates_only_specified_first_half(void)
+{
+    bool actual = target.update(114032);
+
+    TEST_ASSERT_TRUE(actual);
+    TEST_ASSERT_EQUAL(2, target.valueFor(14, 14));
+    TEST_ASSERT_EQUAL(2, target.valueFor(14, 29));
+    TEST_ASSERT_EQUAL(10, target.valueFor(14, 44));
+    TEST_ASSERT_EQUAL(10, target.valueFor(14, 59));
+}
+
+void test_updates_only_specified_last_half(void)
+{
+    bool actual = target.update(114122);
+
+    TEST_ASSERT_TRUE(actual);
+    TEST_ASSERT_EQUAL(10, target.valueFor(14, 14));
+    TEST_ASSERT_EQUAL(10, target.valueFor(14, 29));
+    TEST_ASSERT_EQUAL(2, target.valueFor(14, 44));
+    TEST_ASSERT_EQUAL(2, target.valueFor(14, 59));
+}
+
 int main(int argc, char **argv)
 {
     UNITY_BEGIN();
@@ -71,6 +144,13 @@ int main(int argc, char **argv)
     RUN_TEST(test_does_not_update_single_value);
     RUN_TEST(test_update_single_bool_value);
     RUN_TEST(test_does_not_update_invalid_hour);
+    RUN_TEST(test_does_not_update_invalid_quarter_flag);
+    RUN_TEST(test_updates_only_specified_first_quarter);
+    RUN_TEST(test_updates_only_specified_second_quarter);
+    RUN_TEST(test_updates_only_specified_third_quarter);
+    RUN_TEST(test_updates_only_specified_last_quarter);
+    RUN_TEST(test_updates_only_specified_first_half);
+    RUN_TEST(test_updates_only_specified_last_half);
     UNITY_END();
 
     return 0;
