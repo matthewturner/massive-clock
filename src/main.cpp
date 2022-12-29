@@ -182,10 +182,10 @@ void reportStatus()
   bluetoothSerial.println(F(","));
   bluetoothSerial.print(F("  \"schedules\": {"));
   bluetoothSerial.print(F("    \"display\": ["));
-  for (byte i = 0; i < BLOCKS; i++)
+  for (byte i = 0; i < HOURS_IN_DAY; i++)
   {
     bluetoothSerial.print(displaySchedule.valueFor(i));
-    if (i < BLOCKS - 1)
+    if (i < HOURS_IN_DAY - 1)
     {
       bluetoothSerial.print(F(", "));
     }
@@ -211,15 +211,15 @@ void setupDisplaySchedule()
 
   separatorSchedule.setup(6, 8, true);
   separatorSchedule.setup(20, 21, true);
-  displaySchedule.setup(20, 21, DisplayFlags::ALL);
+  displaySchedule.setup(20, 21, true);
 
   if (CURRENT_SCHEDULE == SUMMER_SCHEDULE)
   {
-    displaySchedule.setup(6, 8, DisplayFlags::ALL);
+    displaySchedule.setup(6, 8, true);
   }
   else
   {
-    displaySchedule.setup(7, 8, DisplayFlags::ALL);
+    displaySchedule.setup(7, 8, true);
   }
 }
 

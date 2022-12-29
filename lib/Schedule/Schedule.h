@@ -9,7 +9,7 @@ const byte SUMMER_SCHEDULE = 0;
 
 typedef enum
 {
-    NONE = 0,
+    BNONE = 0,
     FIRST = 1,
     SECOND = 2,
     THIRD = 4,
