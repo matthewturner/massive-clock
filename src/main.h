@@ -36,7 +36,6 @@ RTC_DS3231 clock;
 EvtManager mgr;
 Timezone *timezone;
 Schedule<CRGB::HTMLColorCode> colorSchedule(CRGB::Red);
-
 Schedule<bool> displaySchedule(false, 1);
 Schedule<bool> separatorSchedule(false);
 Schedule<byte> brightnessSchedule(5);
