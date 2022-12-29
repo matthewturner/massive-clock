@@ -184,7 +184,7 @@ void reportStatus()
   bluetoothSerial.print(F("    \"display\": ["));
   for (byte i = 0; i < HOURS_IN_DAY; i++)
   {
-    bluetoothSerial.print(displaySchedule.valueFor(i));
+    bluetoothSerial.print(displaySchedule.Schedule::valueFor(i));
     if (i < HOURS_IN_DAY - 1)
     {
       bluetoothSerial.print(F(", "));

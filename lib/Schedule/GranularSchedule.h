@@ -15,6 +15,5 @@ class GranularSchedule : public Schedule<DisplayFlags>
 public:
     GranularSchedule(DisplayFlags defaultValue, byte identifier);
 
-    // virtual DisplayFlags valueFor(byte hour);
     bool valueFor(byte hour, byte minute);
 };

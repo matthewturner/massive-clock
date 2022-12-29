@@ -63,7 +63,7 @@ public:
             return false;
         }
 
-        _valuesForHour[hour] = value;
+        _valuesForHour[hour] = (T)value;
 
         return true;
     }
