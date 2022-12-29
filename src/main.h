@@ -14,7 +14,6 @@
 #include <SoftwareSerial.h>
 
 const short SHOW_TEMPORARILY_DURATION = 3000;
-const byte CURRENT_SCHEDULE = SUMMER_SCHEDULE;
 
 const byte DATA_PIN = 3;
 const byte CLOCK_PIN = 13;

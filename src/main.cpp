@@ -209,18 +209,11 @@ void setupDisplaySchedule()
 {
   Serial.println(F("Setting up display schedule..."));
 
-  separatorSchedule.setup(6, 8, true);
-  separatorSchedule.setup(20, 21, true);
-  displaySchedule.setup(20, 21, true);
-
-  if (CURRENT_SCHEDULE == SUMMER_SCHEDULE)
-  {
-    displaySchedule.setup(6, 8, true);
-  }
-  else
-  {
-    displaySchedule.setup(7, 8, true);
-  }
+  separatorSchedule.setup(6, 7, true);
+  displaySchedule.setup(6, 7, true);
+  
+  separatorSchedule.setValueFor(20, BlockFlags::SECOND_HALF, true);
+  displaySchedule.setValueFor(20, BlockFlags::SECOND_HALF, true);
 }
 
 void setupBrightnessSchedule()

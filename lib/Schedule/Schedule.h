@@ -5,8 +5,6 @@
 const byte BLOCKS_PER_HOUR = 4;
 const byte HOURS_IN_DAY = 24;
 const byte BLOCKS = HOURS_IN_DAY * BLOCKS_PER_HOUR;
-const byte WINTER_SCHEDULE = 1;
-const byte SUMMER_SCHEDULE = 0;
 
 typedef enum
 {
