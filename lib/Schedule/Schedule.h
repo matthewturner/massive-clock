@@ -53,28 +53,27 @@ public:
 
     T valueFor(byte hour, byte minute)
     {
-        byte block = minute / 15;
+        byte block = minute / (60 / BLOCKS_PER_HOUR);
 
         return _valuesForBlock[indexFor(hour, block)];
-    }
-
-    byte indexFor(byte hour, byte block)
-    {
-        return (hour * BLOCKS_PER_HOUR) + block;
-    }
-
-    void setValueFor(byte hour, byte block, T value)
-    {
-        _valuesForBlock[indexFor(hour, block)] = value;
     }
 
     void setup(byte min, byte max, T value)
     {
         for (byte h = min; h <= max; h++)
         {
-            for (byte b = 0; b < BLOCKS_PER_HOUR; b++)
+            setValueFor(h, BlockFlags::ALL, value);
+        }
+    }
+
+    void setValueFor(byte hour, BlockFlags flags, T value)
+    {
+        for (byte b = 0; b < BLOCKS_PER_HOUR; b++)
+        {
+            byte flag = flags >> b;
+            if ((flag & 1) == 1)
             {
-                setValueFor(h, b, value);
+                _valuesForBlock[indexFor(hour, b)] = value;
             }
         }
     }
@@ -86,18 +85,16 @@ public:
         uint32_t value = tempEncodedSchedule % 10;
         tempEncodedSchedule /= 10;
 
-        BlockFlags bFlags = BlockFlags::ALL;
+        uint32_t flagValue = BlockFlags::ALL;
         if ((uint32_t)(encodedSchedule / 10000) > 0)
         {
             // long format
-            uint32_t flagValue = tempEncodedSchedule % 100;
+            flagValue = tempEncodedSchedule % 100;
 
-            if (flagValue > 63)
+            if (flagValue > BlockFlags::ALL)
             {
                 return false;
             }
-
-            bFlags = (BlockFlags)flagValue;
 
             tempEncodedSchedule /= 100;
         }
@@ -115,22 +112,7 @@ public:
             return false;
         }
 
-        if ((bFlags & BlockFlags::FIRST) == BlockFlags::FIRST)
-        {
-            setValueFor(hour, 0, (T)value);
-        }
-        if ((bFlags & BlockFlags::SECOND) == BlockFlags::SECOND)
-        {
-            setValueFor(hour, 1, (T)value);
-        }
-        if ((bFlags & BlockFlags::THIRD) == BlockFlags::THIRD)
-        {
-            setValueFor(hour, 2, (T)value);
-        }
-        if ((bFlags & BlockFlags::LAST) == BlockFlags::LAST)
-        {
-            setValueFor(hour, 3, (T)value);
-        }
+        setValueFor(hour, (BlockFlags)flagValue, (T)value);
 
         return true;
     }
@@ -139,4 +121,9 @@ private:
     T _defaultValue;
     T _valuesForBlock[BLOCKS];
     byte _identifier;
+
+    byte indexFor(byte hour, byte block)
+    {
+        return (hour * BLOCKS_PER_HOUR) + block;
+    }
 };
