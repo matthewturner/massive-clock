@@ -5,6 +5,7 @@
 #include <FastLED.h>
 #include "Display.h"
 #include "Schedule.h"
+#include "GranularSchedule.h"
 #include <RTClib.h>
 #include <Timezone.h>
 #include <Eventually.h>
@@ -36,7 +37,8 @@ RTC_DS3231 clock;
 EvtManager mgr;
 Timezone *timezone;
 Schedule<CRGB::HTMLColorCode> colorSchedule(CRGB::Red);
-Schedule<bool> displaySchedule(false, 1);
+
+GranularSchedule displaySchedule(DisplayFlags::OFF, 1);
 Schedule<bool> separatorSchedule(false);
 Schedule<byte> brightnessSchedule(5);
 Schedule<Flags> minimalSchedule(Flags::NONE);

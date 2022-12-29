@@ -92,7 +92,7 @@ bool updating()
     now = toLocal(clock.now());
   }
 
-  if (displaySchedule.valueFor(now.hour()))
+  if (displaySchedule.valueFor(now.hour(), now.minute()))
   {
     Flags mode = minimalSchedule.valueFor(now.hour());
     pendingDisplay.setPart(1, now.hour(), mode);
@@ -211,15 +211,15 @@ void setupDisplaySchedule()
 
   separatorSchedule.setup(6, 8, true);
   separatorSchedule.setup(20, 21, true);
-  displaySchedule.setup(20, 21, true);
+  displaySchedule.setup(20, 21, DisplayFlags::ALL);
 
   if (CURRENT_SCHEDULE == SUMMER_SCHEDULE)
   {
-    displaySchedule.setup(6, 8, true);
+    displaySchedule.setup(6, 8, DisplayFlags::ALL);
   }
   else
   {
-    displaySchedule.setup(7, 8, true);
+    displaySchedule.setup(7, 8, DisplayFlags::ALL);
   }
 }
 
