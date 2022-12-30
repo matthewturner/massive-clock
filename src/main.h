@@ -40,7 +40,7 @@ Schedule<bool> separatorSchedule(false);
 Schedule<byte> brightnessSchedule(5);
 Schedule<Flags> minimalSchedule(Flags::NONE);
 SoftwareSerial bluetoothSerial(RECEIVE_PIN, TRANSMIT_PIN);
-EvtCommandListener commandListener(&bluetoothSerial);
+EvtCommandListener commandListener(&bluetoothSerial, 20);
 EvtStateMachineListener stateMachine;
 
 void onInterrupt();

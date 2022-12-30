@@ -23,6 +23,12 @@ void setup()
   setupTimezones();
   setupTest();
 
+  commandListener.when("set", (EvtCommandAction)set);
+  commandListener.when("set-schedule", (EvtCommandAction)setSchedule);
+  commandListener.when("show", (EvtCommandAction)show);
+  commandListener.when("status", (EvtCommandAction)status);
+  mgr.addListener(&commandListener);
+
   stateMachine.when(IDLE, (EvtAction)idle, UPDATING);
   stateMachine.when(SHOWING, (EvtAction)showing, UPDATING, STATE_FAILED, SHOW_TEMPORARILY_DURATION);
   stateMachine.when(UPDATING, (EvtAction)updating, IDLE);
@@ -32,18 +38,12 @@ void setup()
   mgr.addListener(&stateMachine);
   attachInterrupt(digitalPinToInterrupt(SHOW_PIN), onInterrupt, FALLING);
 
-  commandListener.when("set", (EvtCommandAction)set);
-  commandListener.when("set-schedule", (EvtCommandAction)setSchedule);
-  commandListener.when("show", (EvtCommandAction)show);
-  commandListener.when("status", (EvtCommandAction)status);
-  mgr.addListener(&commandListener);
-
   Serial.println(F("Setup complete. Continuing..."));
 }
 
 bool idle()
 {
-  Serial.println(F("Sleeping..."));
+  // Serial.println(F("Sleeping..."));
   Serial.flush();
   LowPower.idle(SLEEP_8S, ADC_OFF, TIMER2_OFF, TIMER1_OFF, TIMER0_OFF,
                 SPI_OFF, USART0_OFF, TWI_OFF);
@@ -52,15 +52,15 @@ bool idle()
 
 bool show()
 {
-  Serial.println(F("Command: SHOW"));
+  // Serial.println(F("Command: SHOW"));
   stateMachine.transition(SHOWING);
   return true;
 }
 
 bool set(EvtListener *, EvtContext *, long data)
 {
-  Serial.print(F("Command: SET "));
-  Serial.println(data);
+  // Serial.print(F("Command: SET "));
+  // Serial.println(data);
   clock.adjust(DateTime(data));
   stateMachine.transition(SHOWING);
   return true;
@@ -68,8 +68,8 @@ bool set(EvtListener *, EvtContext *, long data)
 
 bool setSchedule(EvtListener *, EvtContext *, long data)
 {
-  Serial.print(F("Command: SET SCHEDULE "));
-  Serial.println(data);
+  // Serial.print(F("Command: SET SCHEDULE "));
+  // Serial.println(data);
   displaySchedule.update(data);
   stateMachine.transition(SHOWING);
   return true;
@@ -77,14 +77,14 @@ bool setSchedule(EvtListener *, EvtContext *, long data)
 
 bool status()
 {
-  Serial.println(F("Command: STATUS"));
+  // Serial.println(F("Command: STATUS"));
   reportStatus();
   return true;
 }
 
 bool updating()
 {
-  Serial.println(F("Updating..."));
+  // Serial.println(F("Updating..."));
 
   DateTime now = DateTime();
   if (CLOCK_IS_ENABLED)
@@ -119,7 +119,7 @@ bool updating()
 
 bool showing()
 {
-  Serial.println(F("Showing temporarily..."));
+  // Serial.println(F("Showing temporarily..."));
 
   DateTime now = DateTime();
   if (CLOCK_IS_ENABLED)
@@ -196,7 +196,7 @@ void reportStatus()
 
 void setupColorSchedule()
 {
-  Serial.println(F("Setup color schedule..."));
+  // Serial.println(F("Setup color schedule..."));
   // daylight
   colorSchedule.setup(8, 20, CRGB::Blue);
   // morning
@@ -207,7 +207,7 @@ void setupColorSchedule()
 
 void setupDisplaySchedule()
 {
-  Serial.println(F("Setting up display schedule..."));
+  // Serial.println(F("Setting up display schedule..."));
 
   separatorSchedule.setup(6, 7, true);
   displaySchedule.setup(6, 7, true);
@@ -218,13 +218,13 @@ void setupDisplaySchedule()
 
 void setupBrightnessSchedule()
 {
-  Serial.println(F("Setting up brightness schedule..."));
+  // Serial.println(F("Setting up brightness schedule..."));
   brightnessSchedule.setup(10, 18, 40);
 }
 
 void setupMinimalModeSchedule()
 {
-  Serial.println(F("Setting up minimal mode schedule..."));
+  // Serial.println(F("Setting up minimal mode schedule..."));
   minimalSchedule.setup(6, 6, Flags::SUPER_MINIMAL);
 }
 
@@ -260,7 +260,7 @@ void setupRealtimeClock()
   }
   if (digitalRead(SHOW_PIN) == LOW)
   {
-    Serial.println(F("Manual override: setting the time..."));
+    // Serial.println(F("Manual override: setting the time..."));
     display.setText("rset");
     render();
     delay(1000);
