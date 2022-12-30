@@ -18,8 +18,6 @@ void setup()
   setupRealtimeClock();
   setupColorSchedule();
   setupDisplaySchedule();
-  setupBrightnessSchedule();
-  setupMinimalModeSchedule();
   setupTimezones();
   setupTest();
 
@@ -92,21 +90,24 @@ bool updating()
     now = toLocal(clock.now());
   }
 
-  if (displaySchedule.valueFor(now.hour(), now.minute()))
+  Flags mode = displaySchedule.valueFor(now.hour(), now.minute());
+  if (mode == Flags::NONE)
   {
-    Flags mode = minimalSchedule.valueFor(now.hour());
-    pendingDisplay.setPart(1, now.hour(), mode);
-    pendingDisplay.setPart(0, now.minute(), (Flags)(mode | Flags::LEADING_ZERO));
-    pendingDisplay.setSeparator(mode == Flags::NONE);
+    pendingDisplay.clear();
   }
   else
   {
-    pendingDisplay.clear();
+    pendingDisplay.setPart(1, now.hour(), mode);
+    pendingDisplay.setPart(0, now.minute(), (Flags)(mode | Flags::LEADING_ZERO));
   }
 
   CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
   pendingDisplay.setColor(colorCode);
-  byte brightness = brightnessSchedule.valueFor(now.hour());
+  byte brightness = 5;
+  if ((mode & Flags::BRIGHT) == Flags::BRIGHT)
+  {
+    brightness = 40;
+  }
   pendingDisplay.setBrightness(brightness);
 
   if (display.updateFrom(&pendingDisplay))
@@ -127,13 +128,19 @@ bool showing()
     now = toLocal(clock.now());
   }
 
-  display.setPart(1, now.hour(), Flags::NONE);
+  display.setPart(1, now.hour(), Flags::SIMPLE);
   display.setPart(0, now.minute(), Flags::LEADING_ZERO);
   display.setSeparator(true);
 
   CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
   display.setColor(colorCode);
-  byte brightness = brightnessSchedule.valueFor(now.hour());
+
+  Flags mode = displaySchedule.valueFor(now.hour(), now.minute());
+  byte brightness = 5;
+  if ((mode & Flags::BRIGHT) == Flags::BRIGHT)
+  {
+    brightness = 40;
+  }
   display.setBrightness(brightness);
 
   render();
@@ -209,26 +216,10 @@ void setupDisplaySchedule()
 {
   // Serial.println(F("Setting up display schedule..."));
 
-  separatorSchedule.setup(6, 7, true);
-  displaySchedule.setup(6, 7, true);
-
-  separatorSchedule.setup(20, 20, true);
-  displaySchedule.setup(20, 20, true);
-
-  // separatorSchedule.setValueFor(20, BlockFlags::SECOND_HALF, true);
-  // displaySchedule.setValueFor(20, BlockFlags::SECOND_HALF, true);
-}
-
-void setupBrightnessSchedule()
-{
-  // Serial.println(F("Setting up brightness schedule..."));
-  brightnessSchedule.setup(10, 18, 40);
-}
-
-void setupMinimalModeSchedule()
-{
-  // Serial.println(F("Setting up minimal mode schedule..."));
-  minimalSchedule.setup(6, 6, Flags::SUPER_MINIMAL);
+  displaySchedule.setup(6, 6, Flags::SUPER_MINIMAL);
+  displaySchedule.setup(7, 7, Flags::SEPARATOR);
+  displaySchedule.setup(10, 18, Flags::BRIGHT);
+  displaySchedule.setValueFor(20, BlockFlags::SECOND_HALF, Flags::SEPARATOR);
 }
 
 void setupRealtimeClock()

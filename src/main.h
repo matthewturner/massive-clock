@@ -35,10 +35,7 @@ RTC_DS3231 clock;
 EvtManager mgr;
 Timezone *timezone;
 Schedule<CRGB::HTMLColorCode> colorSchedule(CRGB::Red);
-Schedule<bool> displaySchedule(false, 1);
-Schedule<bool> separatorSchedule(false);
-Schedule<byte> brightnessSchedule(5);
-Schedule<Flags> minimalSchedule(Flags::NONE);
+Schedule<Flags> displaySchedule(Flags::NONE, 1);
 SoftwareSerial bluetoothSerial(RECEIVE_PIN, TRANSMIT_PIN);
 EvtCommandListener commandListener(&bluetoothSerial, 20);
 EvtStateMachineListener stateMachine;
@@ -59,9 +56,7 @@ DateTime toLocal(DateTime utc);
 
 void setupColorSchedule();
 void setupDisplaySchedule();
-void setupBrightnessSchedule();
 void setupRealtimeClock();
-void setupMinimalModeSchedule();
 void setupTimezones();
 void setupTest();
 
