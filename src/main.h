@@ -28,6 +28,9 @@ const byte UPDATING = 1;
 const byte PROCESSING = 2;
 const byte SHOWING = 3;
 
+const byte BRIGHTNESS_DIM = 5;
+const byte BRIGHTNESS_BRIGHT = 40;
+
 CRGB physicalLeds[NUM_LEDS];
 Display display;
 Display pendingDisplay;
@@ -35,10 +38,7 @@ RTC_DS3231 clock;
 EvtManager mgr;
 Timezone *timezone;
 Schedule<CRGB::HTMLColorCode> colorSchedule(CRGB::Red);
-Schedule<bool> displaySchedule(false, 1);
-Schedule<bool> separatorSchedule(false);
-Schedule<byte> brightnessSchedule(5);
-Schedule<Flags> minimalSchedule(Flags::NONE);
+Schedule<Flags> displaySchedule(Flags::NONE, 1);
 SoftwareSerial bluetoothSerial(RECEIVE_PIN, TRANSMIT_PIN);
 EvtCommandListener commandListener(&bluetoothSerial, 20);
 EvtStateMachineListener stateMachine;
@@ -53,15 +53,14 @@ bool show();
 bool set(EvtListener *, EvtContext *, long data);
 bool setSchedule(EvtListener *, EvtContext *, long data);
 bool status();
+byte brightnessFrom(Flags mode);
 
 void reportStatus();
 DateTime toLocal(DateTime utc);
 
 void setupColorSchedule();
 void setupDisplaySchedule();
-void setupBrightnessSchedule();
 void setupRealtimeClock();
-void setupMinimalModeSchedule();
 void setupTimezones();
 void setupTest();
 

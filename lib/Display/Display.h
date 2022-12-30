@@ -12,9 +12,11 @@ const byte NUM_COMPONENTS = 5;
 typedef enum
 {
     NONE = 0,
-    LEADING_ZERO = 1,
+    SEPARATOR = 1,
     MINIMAL = 2,
-    SUPER_MINIMAL = 4
+    BRIGHT = 4,
+    LEADING_ZERO = 8,
+    STANDARD = SEPARATOR
 } Flags;
 
 class Display
