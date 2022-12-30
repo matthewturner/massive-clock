@@ -31,7 +31,6 @@ public:
     void setLed(byte led, bool show);
     void setLedRange(byte first, byte last, bool show);
     void setText(const char *text);
-    void setText(const __FlashStringHelper *text);
     void setBrightness(byte value);
     void setColor(long color);
     byte getBrightness();
