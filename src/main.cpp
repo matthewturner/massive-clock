@@ -279,7 +279,7 @@ void setupTest()
 
 void setupTimezones()
 {
-  // Serial.println(F("Setup timezones..."));
+  Serial.println(F("Setup timezones..."));
 
   timezone = new Timezone(
       TimeChangeRule("BST", Last, Sun, Mar, 1, 60),
