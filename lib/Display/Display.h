@@ -5,6 +5,7 @@
 #include "Component.h"
 #include "Digit.h"
 #include "Separator.h"
+#include <Arduino.h>
 
 const byte NUM_LEDS = 86;
 const byte NUM_COMPONENTS = 5;
@@ -12,12 +13,11 @@ const byte NUM_COMPONENTS = 5;
 typedef enum
 {
     NONE = 0,
-    SIMPLE = 1,
-    LEADING_ZERO = 2,
-    SEPARATOR = 4,
-    MINIMAL = 8,
-    SUPER_MINIMAL = 16,
-    BRIGHT = 32
+    SEPARATOR = 1,
+    MINIMAL = 2,
+    BRIGHT = 4,
+    LEADING_ZERO = 8,
+    STANDARD = SEPARATOR
 } Flags;
 
 class Display
@@ -31,6 +31,7 @@ public:
     void setLed(byte led, bool show);
     void setLedRange(byte first, byte last, bool show);
     void setText(const char *text);
+    void setText(const __FlashStringHelper *text);
     void setBrightness(byte value);
     void setColor(long color);
     byte getBrightness();

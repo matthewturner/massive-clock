@@ -41,7 +41,7 @@ void setup()
 
 bool idle()
 {
-  // Serial.println(F("Sleeping..."));
+  Serial.println(F("Sleeping..."));
   Serial.flush();
   LowPower.idle(SLEEP_8S, ADC_OFF, TIMER2_OFF, TIMER1_OFF, TIMER0_OFF,
                 SPI_OFF, USART0_OFF, TWI_OFF);
@@ -50,15 +50,15 @@ bool idle()
 
 bool show()
 {
-  // Serial.println(F("Command: SHOW"));
+  Serial.println(F("Command: SHOW"));
   stateMachine.transition(SHOWING);
   return true;
 }
 
 bool set(EvtListener *, EvtContext *, long data)
 {
-  // Serial.print(F("Command: SET "));
-  // Serial.println(data);
+  Serial.print(F("Command: SET "));
+  Serial.println(data);
   clock.adjust(DateTime(data));
   stateMachine.transition(SHOWING);
   return true;
@@ -66,8 +66,8 @@ bool set(EvtListener *, EvtContext *, long data)
 
 bool setSchedule(EvtListener *, EvtContext *, long data)
 {
-  // Serial.print(F("Command: SET SCHEDULE "));
-  // Serial.println(data);
+  Serial.print(F("Command: SET SCHEDULE "));
+  Serial.println(data);
   displaySchedule.update(data);
   stateMachine.transition(SHOWING);
   return true;
@@ -75,14 +75,14 @@ bool setSchedule(EvtListener *, EvtContext *, long data)
 
 bool status()
 {
-  // Serial.println(F("Command: STATUS"));
+  Serial.println(F("Command: STATUS"));
   reportStatus();
   return true;
 }
 
 bool updating()
 {
-  // Serial.println(F("Updating..."));
+  Serial.println(F("Updating..."));
 
   DateTime now = DateTime();
   if (CLOCK_IS_ENABLED)
@@ -103,12 +103,8 @@ bool updating()
 
   CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
   pendingDisplay.setColor(colorCode);
-  byte brightness = 5;
-  if ((mode & Flags::BRIGHT) == Flags::BRIGHT)
-  {
-    brightness = 40;
-  }
-  pendingDisplay.setBrightness(brightness);
+
+  pendingDisplay.setBrightness(brightnessFrom(mode));
 
   if (display.updateFrom(&pendingDisplay))
   {
@@ -118,9 +114,18 @@ bool updating()
   return true;
 }
 
+byte brightnessFrom(Flags mode)
+{
+  if ((mode & Flags::BRIGHT) == Flags::BRIGHT)
+  {
+    return BRIGHTNESS_BRIGHT;
+  }
+  return BRIGHTNESS_DIM;
+}
+
 bool showing()
 {
-  // Serial.println(F("Showing temporarily..."));
+  Serial.println(F("Showing temporarily..."));
 
   DateTime now = DateTime();
   if (CLOCK_IS_ENABLED)
@@ -128,7 +133,7 @@ bool showing()
     now = toLocal(clock.now());
   }
 
-  display.setPart(1, now.hour(), Flags::SIMPLE);
+  display.setPart(1, now.hour(), Flags::STANDARD);
   display.setPart(0, now.minute(), Flags::LEADING_ZERO);
   display.setSeparator(true);
 
@@ -136,12 +141,7 @@ bool showing()
   display.setColor(colorCode);
 
   Flags mode = displaySchedule.valueFor(now.hour(), now.minute());
-  byte brightness = 5;
-  if ((mode & Flags::BRIGHT) == Flags::BRIGHT)
-  {
-    brightness = 40;
-  }
-  display.setBrightness(brightness);
+  display.setBrightness(brightnessFrom(mode));
 
   render();
 
@@ -203,7 +203,7 @@ void reportStatus()
 
 void setupColorSchedule()
 {
-  // Serial.println(F("Setup color schedule..."));
+  Serial.println(F("Setup color schedule..."));
   // daylight
   colorSchedule.setup(8, 20, CRGB::Blue);
   // morning
@@ -214,12 +214,12 @@ void setupColorSchedule()
 
 void setupDisplaySchedule()
 {
-  // Serial.println(F("Setting up display schedule..."));
+  Serial.println(F("Setting up display schedule..."));
 
-  displaySchedule.setup(6, 6, Flags::SUPER_MINIMAL);
-  displaySchedule.setup(7, 7, Flags::SEPARATOR);
+  displaySchedule.setup(6, 6, Flags::MINIMAL);
+  displaySchedule.setup(7, 7, Flags::STANDARD);
   displaySchedule.setup(10, 18, Flags::BRIGHT);
-  displaySchedule.setValueFor(20, BlockFlags::SECOND_HALF, Flags::SEPARATOR);
+  displaySchedule.setValueFor(20, BlockFlags::SECOND_HALF, Flags::STANDARD);
 }
 
 void setupRealtimeClock()
@@ -245,20 +245,10 @@ void setupRealtimeClock()
 
   if (clock.lostPower())
   {
-    Serial.println(F("Realtime Clock lost power, setting the time..."));
+    Serial.println(F("RTC lost power..."));
     display.setText("lost");
     render();
     delay(1000);
-    clock.adjust(DateTime(F(__DATE__), F(__TIME__)));
-    // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
-  }
-  if (digitalRead(SHOW_PIN) == LOW)
-  {
-    // Serial.println(F("Manual override: setting the time..."));
-    display.setText("rset");
-    render();
-    delay(1000);
-    clock.adjust(DateTime(F(__DATE__), F(__TIME__)));
   }
 }
 
@@ -288,7 +278,7 @@ void setupTest()
 
 void setupTimezones()
 {
-  Serial.println(F("Setup timezones..."));
+  // Serial.println(F("Setup timezones..."));
 
   timezone = new Timezone(
       TimeChangeRule("BST", Last, Sun, Mar, 1, 60),

@@ -2,19 +2,15 @@
 
 #include "common.h"
 
-const byte BLOCKS_PER_HOUR = 1;
+const byte BLOCKS_PER_HOUR = 2;
 const byte HOURS_IN_DAY = 24;
 const byte BLOCKS = HOURS_IN_DAY * BLOCKS_PER_HOUR;
 
 typedef enum
 {
     BNONE = 0,
-    FIRST = 1,
-    SECOND = 2,
-    THIRD = 4,
-    LAST = 8,
-    FIRST_HALF = FIRST | SECOND,
-    SECOND_HALF = THIRD | LAST,
+    FIRST_HALF = 1,
+    SECOND_HALF = 2,
     ALL = FIRST_HALF | SECOND_HALF
 } BlockFlags;
 

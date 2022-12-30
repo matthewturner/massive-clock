@@ -28,6 +28,9 @@ const byte UPDATING = 1;
 const byte PROCESSING = 2;
 const byte SHOWING = 3;
 
+const byte BRIGHTNESS_DIM = 5;
+const byte BRIGHTNESS_BRIGHT = 40;
+
 CRGB physicalLeds[NUM_LEDS];
 Display display;
 Display pendingDisplay;
@@ -50,6 +53,7 @@ bool show();
 bool set(EvtListener *, EvtContext *, long data);
 bool setSchedule(EvtListener *, EvtContext *, long data);
 bool status();
+byte brightnessFrom(Flags mode);
 
 void reportStatus();
 DateTime toLocal(DateTime utc);
