@@ -211,9 +211,12 @@ void setupDisplaySchedule()
 
   separatorSchedule.setup(6, 7, true);
   displaySchedule.setup(6, 7, true);
-  
-  separatorSchedule.setValueFor(20, BlockFlags::SECOND_HALF, true);
-  displaySchedule.setValueFor(20, BlockFlags::SECOND_HALF, true);
+
+  separatorSchedule.setup(20, 20, true);
+  displaySchedule.setup(20, 20, true);
+
+  // separatorSchedule.setValueFor(20, BlockFlags::SECOND_HALF, true);
+  // displaySchedule.setValueFor(20, BlockFlags::SECOND_HALF, true);
 }
 
 void setupBrightnessSchedule()
