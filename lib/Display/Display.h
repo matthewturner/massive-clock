@@ -5,7 +5,6 @@
 #include "Component.h"
 #include "Digit.h"
 #include "Separator.h"
-#include <Arduino.h>
 
 const byte NUM_LEDS = 86;
 const byte NUM_COMPONENTS = 5;
