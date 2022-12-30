@@ -90,7 +90,6 @@ void Display::setPart(byte part, byte value, Flags flags)
       setDigit(1 + offset, tens);
     }
   }
-  setSeparator((flags & Flags::SEPARATOR) == Flags::SEPARATOR);
 }
 
 void Display::setText(const char *text)

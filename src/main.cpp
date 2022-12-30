@@ -99,6 +99,7 @@ bool updating()
   {
     pendingDisplay.setPart(1, now.hour(), mode);
     pendingDisplay.setPart(0, now.minute(), (Flags)(mode | Flags::LEADING_ZERO));
+    pendingDisplay.setSeparator((mode & Flags::SEPARATOR) == Flags::SEPARATOR);
   }
 
   CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
