@@ -91,15 +91,15 @@ bool updating()
   }
 
   Flags mode = displaySchedule.valueFor(now.hour(), now.minute());
-  if (mode == Flags::NONE)
-  {
-    pendingDisplay.clear();
-  }
-  else
+  if ((mode & Flags::ON) == Flags::ON)
   {
     pendingDisplay.setPart(1, now.hour(), mode);
     pendingDisplay.setPart(0, now.minute(), (Flags)(mode | Flags::LEADING_ZERO));
     pendingDisplay.setSeparator((mode & Flags::SEPARATOR) == Flags::SEPARATOR);
+  }
+  else
+  {
+    pendingDisplay.clear();
   }
 
   CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
