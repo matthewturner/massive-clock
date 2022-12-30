@@ -102,7 +102,7 @@ bool updating()
     pendingDisplay.clear();
   }
 
-  CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
+  CRGB::HTMLColorCode colorCode = colorFor(now.hour());
   pendingDisplay.setColor(colorCode);
 
   pendingDisplay.setBrightness(brightnessFrom(mode));
@@ -113,6 +113,13 @@ bool updating()
   }
 
   return true;
+}
+
+CRGB::HTMLColorCode colorFor(byte hour)
+{
+  byte colorIndex = colorSchedule.valueFor(hour);
+  CRGB::HTMLColorCode colorCode = knownColors[colorIndex];
+  return colorCode;
 }
 
 byte brightnessFrom(Flags mode)
@@ -138,7 +145,7 @@ bool showing()
   display.setPart(0, now.minute(), Flags::LEADING_ZERO);
   display.setSeparator(true);
 
-  CRGB::HTMLColorCode colorCode = colorSchedule.valueFor(now.hour());
+  CRGB::HTMLColorCode colorCode = colorFor(now.hour());
   display.setColor(colorCode);
 
   Flags mode = displaySchedule.valueFor(now.hour(), now.minute());
@@ -205,12 +212,18 @@ void reportStatus()
 void setupColorSchedule()
 {
   Serial.println(F("Setup color schedule..."));
+
+  knownColors[0] = CRGB::Red;
+
   // daylight
-  colorSchedule.setup(8, 20, CRGB::Blue);
+  knownColors[1] = CRGB::Blue;
+  colorSchedule.setup(8, 20, 1);
   // morning
-  colorSchedule.setup(6, 7, CRGB::Orange);
+  knownColors[2] = CRGB::Orange;
+  colorSchedule.setup(6, 7, 2);
   // evening
-  colorSchedule.setup(21, 21, CRGB::Purple);
+  knownColors[3] = CRGB::Purple;
+  colorSchedule.setup(21, 21, 3);
 }
 
 void setupDisplaySchedule()
@@ -220,8 +233,7 @@ void setupDisplaySchedule()
   displaySchedule.setup(6, 6, Flags::MINIMAL);
   displaySchedule.setup(7, 7, Flags::STANDARD);
   displaySchedule.setup(10, 18, Flags::BRIGHT);
-  displaySchedule.setup(20, 20, Flags::STANDARD);
-  // displaySchedule.setValueFor(20, BlockFlags::SECOND_HALF, Flags::STANDARD);
+  displaySchedule.setValueFor(20, BlockFlags::SECOND_HALF, Flags::STANDARD);
 }
 
 void setupRealtimeClock()

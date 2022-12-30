@@ -37,7 +37,8 @@ Display pendingDisplay;
 RTC_DS3231 clock;
 EvtManager mgr;
 Timezone *timezone;
-Schedule<CRGB::HTMLColorCode> colorSchedule(CRGB::Red);
+CRGB::HTMLColorCode knownColors[4];
+Schedule<byte> colorSchedule(0);
 Schedule<Flags> displaySchedule(Flags::NONE, 1);
 SoftwareSerial bluetoothSerial(RECEIVE_PIN, TRANSMIT_PIN);
 EvtCommandListener commandListener(&bluetoothSerial, 20);
@@ -54,6 +55,7 @@ bool set(EvtListener *, EvtContext *, long data);
 bool setSchedule(EvtListener *, EvtContext *, long data);
 bool status();
 byte brightnessFrom(Flags mode);
+CRGB::HTMLColorCode colorFor(byte hour);
 
 void reportStatus();
 DateTime toLocal(DateTime utc);

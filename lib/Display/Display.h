@@ -9,7 +9,7 @@
 const byte NUM_LEDS = 86;
 const byte NUM_COMPONENTS = 5;
 
-typedef enum
+typedef enum : byte
 {
     NONE = 0,
     STANDARD = 1,

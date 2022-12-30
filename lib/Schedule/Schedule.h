@@ -2,11 +2,11 @@
 
 #include "common.h"
 
-const byte BLOCKS_PER_HOUR = 1;
+const byte BLOCKS_PER_HOUR = 2;
 const byte HOURS_IN_DAY = 24;
 const byte BLOCKS = HOURS_IN_DAY * BLOCKS_PER_HOUR;
 
-typedef enum
+typedef enum : byte
 {
     BNONE = 0,
     FIRST_HALF = 1,
