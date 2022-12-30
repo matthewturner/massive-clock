@@ -76,8 +76,8 @@ void test_updates_only_specified_first_half(void)
     TEST_ASSERT_TRUE(actual);
     TEST_ASSERT_EQUAL(2, target.valueFor(14, 14));
     TEST_ASSERT_EQUAL(2, target.valueFor(14, 29));
-    TEST_ASSERT_EQUAL(10, target.valueFor(14, 44));
-    TEST_ASSERT_EQUAL(10, target.valueFor(14, 59));
+    TEST_ASSERT_EQUAL(2, target.valueFor(14, 44));
+    TEST_ASSERT_EQUAL(2, target.valueFor(14, 59));
 }
 
 void test_updates_only_specified_second_half(void)
@@ -87,8 +87,8 @@ void test_updates_only_specified_second_half(void)
     TEST_ASSERT_TRUE(actual);
     TEST_ASSERT_EQUAL(10, target.valueFor(14, 14));
     TEST_ASSERT_EQUAL(10, target.valueFor(14, 29));
-    TEST_ASSERT_EQUAL(2, target.valueFor(14, 44));
-    TEST_ASSERT_EQUAL(2, target.valueFor(14, 59));
+    TEST_ASSERT_EQUAL(10, target.valueFor(14, 44));
+    TEST_ASSERT_EQUAL(10, target.valueFor(14, 59));
 }
 
 int main(int argc, char **argv)
