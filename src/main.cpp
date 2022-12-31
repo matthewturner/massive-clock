@@ -91,7 +91,7 @@ bool updating()
   }
 
   Flags mode = displaySchedule.valueFor(now.hour(), now.minute());
-  if ((mode & Flags::ON) == Flags::ON)
+  if ((mode & Flags::STANDARD) == Flags::STANDARD || (mode & Flags::MINIMAL) == Flags::MINIMAL)
   {
     pendingDisplay.setPart(1, now.hour(), mode);
     pendingDisplay.setPart(0, now.minute(), (Flags)(mode | Flags::LEADING_ZERO));
