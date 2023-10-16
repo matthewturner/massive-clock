@@ -2,6 +2,20 @@
 
 # Massive Clock
 
+A massive 8 segment display with 3 RGB LEDs per segment.
+
+## Schedules
+
+Schedules can be set by sending an encoded 6 digit integer:
+
+```
+1             1   4       0   1          2
+schedule      hour        block         value
+id
+```
+
+This example would turn the display on for the first half of the 14th hour, ie 14:00-14:30.
+
 ## Installing Platform IO
 
 Install command line tools by following the installation instructions for [Windows](https://docs.platformio.org/en/latest/core/installation.html#windows)
