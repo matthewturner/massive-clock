@@ -25,6 +25,7 @@ void setup()
   commandListener.when("set-schedule", (EvtCommandAction)setSchedule);
   commandListener.when("show", (EvtCommandAction)show);
   commandListener.when("status", (EvtCommandAction)status);
+  commandListener.when("set-opt", (EvtCommandAction)setOptions);
   mgr.addListener(&commandListener);
 
   stateMachine.when(IDLE, (EvtAction)idle, UPDATING);
@@ -77,6 +78,14 @@ bool status()
 {
   Serial.println(F("Command: STATUS"));
   reportStatus();
+  return true;
+}
+
+bool setOptions(EvtListener *, EvtContext *, long data)
+{
+  Serial.print(F("Command: SET-OPT "));
+  Serial.println(data);
+  showAfterSet = data % 10;
   return true;
 }
 
