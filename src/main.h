@@ -43,6 +43,7 @@ Schedule<Flags> displaySchedule(Flags::NONE, 1);
 SoftwareSerial bluetoothSerial(RECEIVE_PIN, TRANSMIT_PIN);
 EvtCommandListener commandListener(&bluetoothSerial, 20);
 EvtStateMachineListener stateMachine;
+bool showAfterSet = false;
 
 bool showAfterSet = false;
 
