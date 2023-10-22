@@ -14,6 +14,8 @@
 #include <SoftwareSerial.h>
 
 const short SHOW_TEMPORARILY_DURATION = 3000;
+const int REQUEST_SYNC_INITIAL_SCHEDULE = 1000 * 60;   // 1 minute
+const int REQUEST_SYNC_SCHEDULE = 1000 * 60 * 60 * 24; // 24 hours
 
 const byte DATA_PIN = 3;
 const byte CLOCK_PIN = 13;
@@ -42,8 +44,11 @@ Schedule<byte> colorSchedule(0);
 Schedule<Flags> displaySchedule(Flags::NONE, 1);
 SoftwareSerial bluetoothSerial(RECEIVE_PIN, TRANSMIT_PIN);
 EvtCommandListener commandListener(&bluetoothSerial, 20);
+EvtTimeListener requestSyncListener(REQUEST_SYNC_INITIAL_SCHEDULE, true, (EvtAction)requestSync);
 EvtStateMachineListener stateMachine;
 bool showAfterSet = false;
+bool timeSet = false;
+bool scheduleSet = false;
 
 bool showAfterSet = false;
 
@@ -53,6 +58,7 @@ bool updating();
 bool idle();
 bool showing();
 bool show();
+bool requestSync();
 bool set(EvtListener *, EvtContext *, long data);
 bool setSchedule(EvtListener *, EvtContext *, long data);
 bool setOptions(EvtListener *, EvtContext *, long data);
