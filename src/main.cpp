@@ -25,6 +25,7 @@ void setup()
   commandListener.when("set-schedule", (EvtCommandAction)setSchedule);
   commandListener.when("show", (EvtCommandAction)show);
   commandListener.when("status", (EvtCommandAction)status);
+  commandListener.when("set-opt", (EvtCommandAction)setOptions);
   mgr.addListener(&commandListener);
 
   stateMachine.when(IDLE, (EvtAction)idle, UPDATING);
@@ -60,7 +61,10 @@ bool set(EvtListener *, EvtContext *, long data)
   Serial.print(F("Command: SET "));
   Serial.println(data);
   clock.adjust(DateTime(data));
-  stateMachine.transition(SHOWING);
+  if (showAfterSet)
+  {
+    stateMachine.transition(SHOWING);
+  }
   return true;
 }
 
@@ -69,7 +73,10 @@ bool setSchedule(EvtListener *, EvtContext *, long data)
   Serial.print(F("Command: SET SCHEDULE "));
   Serial.println(data);
   displaySchedule.update(data);
-  stateMachine.transition(SHOWING);
+  if (showAfterSet)
+  {
+    stateMachine.transition(SHOWING);
+  }
   return true;
 }
 
@@ -77,6 +84,14 @@ bool status()
 {
   Serial.println(F("Command: STATUS"));
   reportStatus();
+  return true;
+}
+
+bool setOptions(EvtListener *, EvtContext *, long data)
+{
+  Serial.print(F("Command: SET-OPT "));
+  Serial.println(data);
+  showAfterSet = data % 10;
   return true;
 }
 
@@ -230,9 +245,9 @@ void setupDisplaySchedule()
 {
   Serial.println(F("Setting up display schedule..."));
 
-  displaySchedule.setup(6, 6, Flags::MINIMAL);
-  displaySchedule.setup(7, 7, Flags::STANDARD);
-  displaySchedule.setup(10, 18, Flags::BRIGHT);
+  // displaySchedule.setup(6, 6, Flags::MINIMAL);
+  // displaySchedule.setup(7, 7, Flags::STANDARD);
+  // displaySchedule.setup(10, 18, (Flags)(Flags::STANDARD | Flags::BRIGHT));
   displaySchedule.setValueFor(20, BlockFlags::SECOND_HALF, Flags::STANDARD);
 }
 

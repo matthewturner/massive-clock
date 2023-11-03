@@ -44,15 +44,17 @@ SoftwareSerial bluetoothSerial(RECEIVE_PIN, TRANSMIT_PIN);
 EvtCommandListener commandListener(&bluetoothSerial, 20);
 EvtStateMachineListener stateMachine;
 
+bool showAfterSet = false;
+
 void onInterrupt();
 void render();
-void render(CRGB::HTMLColorCode colorCode, byte brightness);
 bool updating();
 bool idle();
 bool showing();
 bool show();
 bool set(EvtListener *, EvtContext *, long data);
 bool setSchedule(EvtListener *, EvtContext *, long data);
+bool setOptions(EvtListener *, EvtContext *, long data);
 bool status();
 byte brightnessFrom(Flags mode);
 CRGB::HTMLColorCode colorFor(byte hour);
