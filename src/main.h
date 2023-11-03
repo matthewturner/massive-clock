@@ -40,17 +40,18 @@ Timezone *timezone;
 CRGB::HTMLColorCode knownColors[4];
 Schedule<byte> colorSchedule(0);
 Schedule<Flags> displaySchedule(Flags::NONE, 1);
+SoftwareSerial bluetoothSerial(RECEIVE_PIN, TRANSMIT_PIN);
+EvtCommandListener commandListener(&bluetoothSerial, 20);
+EvtStateMachineListener stateMachine;
 
 bool showAfterSet = false;
 
 void onInterrupt();
 void render();
-void render(CRGB::HTMLColorCode colorCode, byte brightness);
 bool updating();
 bool idle();
 bool showing();
 bool show();
-bool requestSync();
 bool set(EvtListener *, EvtContext *, long data);
 bool setSchedule(EvtListener *, EvtContext *, long data);
 bool setOptions(EvtListener *, EvtContext *, long data);
@@ -66,9 +67,5 @@ void setupDisplaySchedule();
 void setupRealtimeClock();
 void setupTimezones();
 void setupTest();
-
-SoftwareSerial bluetoothSerial(RECEIVE_PIN, TRANSMIT_PIN);
-EvtCommandListener commandListener(&bluetoothSerial, 20);
-EvtStateMachineListener stateMachine;
 
 #endif
