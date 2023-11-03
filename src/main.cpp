@@ -58,7 +58,7 @@ bool show()
 
 bool requestSync()
 {
-  if (timeSet && scheduleSet)
+  if (dateTimeSet && scheduleSet)
   {
     Serial.println(F("Already synchronized, backing off to main sync schedule..."));
     requestSyncListener.setInterval(REQUEST_SYNC_SCHEDULE);
@@ -79,7 +79,7 @@ bool set(EvtListener *, EvtContext *, long data)
   {
     stateMachine.transition(SHOWING);
   }
-  timeSet = true;
+  dateTimeSet = true;
   return true;
 }
 
