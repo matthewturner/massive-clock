@@ -56,20 +56,6 @@ bool show()
   return true;
 }
 
-bool requestSync()
-{
-  if (dateTimeSet && scheduleSet)
-  {
-    Serial.println(F("Already synchronized, backing off to main sync schedule..."));
-    requestSyncListener.setInterval(REQUEST_SYNC_SCHEDULE);
-    return true;
-  }
-
-  Serial.println(F("Requesting sync..."));
-  bluetoothSerial.println(F(">request-sync!"));
-  return true;
-}
-
 bool set(EvtListener *, EvtContext *, long data)
 {
   Serial.print(F("Command: SET "));
@@ -79,7 +65,6 @@ bool set(EvtListener *, EvtContext *, long data)
   {
     stateMachine.transition(SHOWING);
   }
-  dateTimeSet = true;
   return true;
 }
 
@@ -92,7 +77,6 @@ bool setSchedule(EvtListener *, EvtContext *, long data)
   {
     stateMachine.transition(SHOWING);
   }
-  scheduleSet = true;
   return true;
 }
 
