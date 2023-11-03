@@ -58,7 +58,7 @@ bool show()
 
 bool requestSync()
 {
-  if (timeSet && scheduleSet)
+  if (dateTimeSet && scheduleSet)
   {
     Serial.println(F("Already synchronized, backing off to main sync schedule..."));
     requestSyncListener.setInterval(REQUEST_SYNC_SCHEDULE);
@@ -79,7 +79,7 @@ bool set(EvtListener *, EvtContext *, long data)
   {
     stateMachine.transition(SHOWING);
   }
-  timeSet = true;
+  dateTimeSet = true;
   return true;
 }
 
@@ -261,10 +261,10 @@ void setupDisplaySchedule()
 {
   Serial.println(F("Setting up display schedule..."));
 
-  displaySchedule.setup(6, 6, Flags::MINIMAL);
-  displaySchedule.setup(7, 7, Flags::STANDARD);
-  displaySchedule.setup(10, 18, Flags::BRIGHT);
-  displaySchedule.setValueFor(20, BlockFlags::SECOND_HALF, Flags::STANDARD);
+  // displaySchedule.setup(6, 6, Flags::MINIMAL);
+  // displaySchedule.setup(7, 7, Flags::STANDARD);
+  // displaySchedule.setup(10, 18, (Flags)(Flags::STANDARD | Flags::BRIGHT));
+  // displaySchedule.setValueFor(20, BlockFlags::SECOND_HALF, Flags::STANDARD);
 }
 
 void setupRealtimeClock()
