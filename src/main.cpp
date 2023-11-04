@@ -248,7 +248,7 @@ void setupDisplaySchedule()
   // displaySchedule.setup(6, 6, Flags::MINIMAL);
   // displaySchedule.setup(7, 7, Flags::STANDARD);
   // displaySchedule.setup(10, 18, (Flags)(Flags::STANDARD | Flags::BRIGHT));
-  displaySchedule.setValueFor(20, BlockFlags::SECOND_HALF, Flags::STANDARD);
+  // displaySchedule.setValueFor(20, BlockFlags::SECOND_HALF, Flags::STANDARD);
 }
 
 void setupRealtimeClock()
