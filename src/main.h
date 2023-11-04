@@ -47,8 +47,6 @@ bool showAfterSet = false;
 bool dateTimeSet = false;
 bool scheduleSet = false;
 
-bool showAfterSet = false;
-
 void onInterrupt();
 void render();
 bool updating();
