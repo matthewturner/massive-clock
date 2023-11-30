@@ -14,7 +14,7 @@ schedule      hour        block         value
 id
 ```
 
-This example would turn the display on for the first half of the 14th hour, ie 14:00-14:30.
+This example would set the display to minimal for the first half of the 14th hour, ie 14:00-14:30.
 
 ## Installing Platform IO
 
