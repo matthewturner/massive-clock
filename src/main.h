@@ -14,6 +14,8 @@
 #include <SoftwareSerial.h>
 
 const short SHOW_TEMPORARILY_DURATION = 3000;
+const uint32_t REQUEST_SYNC_INITIAL_SCHEDULE = (uint32_t)1000 * 60;   // 1 minute
+const uint32_t REQUEST_SYNC_SCHEDULE = (uint32_t)1000 * 60 * 60 * 24; // 24 hours
 
 const byte DATA_PIN = 3;
 const byte CLOCK_PIN = 13;
@@ -40,11 +42,10 @@ Timezone *timezone;
 CRGB::HTMLColorCode knownColors[4];
 Schedule<byte> colorSchedule(0);
 Schedule<Flags> displaySchedule(Flags::NONE, 1);
-SoftwareSerial bluetoothSerial(RECEIVE_PIN, TRANSMIT_PIN);
-EvtCommandListener commandListener(&bluetoothSerial, 20);
-EvtStateMachineListener stateMachine;
 
 bool showAfterSet = false;
+bool dateTimeSet = false;
+bool scheduleSet = false;
 
 void onInterrupt();
 void render();
@@ -52,6 +53,7 @@ bool updating();
 bool idle();
 bool showing();
 bool show();
+bool requestSync();
 bool set(EvtListener *, EvtContext *, long data);
 bool setSchedule(EvtListener *, EvtContext *, long data);
 bool setOptions(EvtListener *, EvtContext *, long data);
@@ -67,5 +69,10 @@ void setupDisplaySchedule();
 void setupRealtimeClock();
 void setupTimezones();
 void setupTest();
+
+EvtTimeListener requestSyncListener(REQUEST_SYNC_INITIAL_SCHEDULE, true, (EvtAction)requestSync);
+SoftwareSerial bluetoothSerial(RECEIVE_PIN, TRANSMIT_PIN);
+EvtCommandListener commandListener(&bluetoothSerial, 20);
+EvtStateMachineListener stateMachine;
 
 #endif
