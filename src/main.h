@@ -38,7 +38,7 @@ RTC_DS3231 clock;
 EvtManager mgr;
 Timezone *timezone;
 CRGB::HTMLColorCode knownColors[4];
-Schedule<byte> colorSchedule(0);
+Schedule<byte> colorSchedule(0, 2);
 Schedule<Flags> displaySchedule(Flags::NONE, 1);
 SoftwareSerial bluetoothSerial(RECEIVE_PIN, TRANSMIT_PIN);
 EvtCommandListener commandListener(&bluetoothSerial, 20);

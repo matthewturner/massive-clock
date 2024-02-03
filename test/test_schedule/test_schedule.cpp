@@ -91,6 +91,13 @@ void test_updates_only_specified_second_half(void)
     TEST_ASSERT_EQUAL(2, target.valueFor(14, 59));
 }
 
+void test_does_not_update_non_matching_identifier(void)
+{
+    bool actual = target.update(914022);
+
+    TEST_ASSERT_FALSE(actual);
+}
+
 int main(int argc, char **argv)
 {
     UNITY_BEGIN();
@@ -103,6 +110,7 @@ int main(int argc, char **argv)
     RUN_TEST(test_does_not_update_invalid_quarter_flag);
     RUN_TEST(test_updates_only_specified_first_half);
     RUN_TEST(test_updates_only_specified_second_half);
+    RUN_TEST(test_does_not_update_non_matching_identifier);
     UNITY_END();
 
     return 0;
