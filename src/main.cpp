@@ -73,6 +73,7 @@ bool setSchedule(EvtListener *, EvtContext *, long data)
   Serial.print(F("Command: SET SCHEDULE "));
   Serial.println(data);
   displaySchedule.update(data);
+  colorSchedule.update(data);
   if (showAfterSet)
   {
     stateMachine.transition(SHOWING);
